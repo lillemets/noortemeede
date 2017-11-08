@@ -1,0 +1,74 @@
+---
+title: "Põllumajandusliku tegevusega alustava noore ettevõtja toetus"
+author: "Jüri Lillemets \nEesti Maaülikool"
+date: 21. november 2017
+output: 
+  revealjs::revealjs_presentation:
+    incremental: true
+    theme: white
+    transition: slide
+---
+
+```{r setup, include=FALSE}
+# Seaded
+knitr::opts_chunk$set(include = T, eval = T, echo = F, message = F, warning = F, 
+                      fig.asp = .5, fig.width = 10)
+
+# Töökaust
+knitr::opts_knit$set(root.dir = '/home/jrl/work/noortemeede') 
+
+# Laadi pakid
+library('plotly')
+
+# Laadi objektid
+load('võrdlus.Rda')
+```
+
+# Mis toetus?
+
+Meede "Noorte põllumajandustootjate tegevuse alustamine"
+
+-Eesti maaelu arengukava 2007-2013 meede 1.2
+-Eesti maaelu arengukava 2014-2020 meede 6.1
+
+# Miks toetus?
+
+Meetme üldeesmärk oli noorte põllumajandustootjate *tegevuse alustamise hõlbustamine* ja *põlvkondade vahetusele kaasaaitamine* põllumajanduses.
+
+Miinimumnõuded ... Füüsilisest isikust ettevõtjal või osaühingu kõigil osanikel peavad olema *ametialased oskused ja pädevus* ...
+
+## Noored põllumajandustootmises Euroopas
+
+``` {r noorte_kaart}
+```
+
+## Noorte osakaalu muutus põllumajandustootmises
+
+``` {r noorte_muutus}
+```
+
+# Keda on toetatud?
+
+## Toetatud ettevõtjate majanduslik suurus
+
+``` {r majanduslik_suurus}
+plyMaj$müügitulu
+plyMaj$võlakordaja
+```
+
+## Toetatud ettevõtjate tegevusalad
+
+``` {r tegevusalad}
+```
+
+# Kuidas on läinud?
+
+Milliseid näitajaid vaadata?
+
+``` {r tegevusalad}
+```
+
+# Milline on majanduslik mõju?
+
+``` {r }
+```
