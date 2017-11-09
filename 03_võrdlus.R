@@ -26,9 +26,8 @@ vrMaj <- aggregate(majAr[, 7:ncol(majAr)],
 vrMaj[, 4:ncol(vrMaj)] <- lapply(vrMaj[, 4:ncol(vrMaj)], function(x)
                                  ifelse(x %in% boxplot.stats(x)$out, NA, x))
 
-## Loo list joonistega iga näitaja kohta
-
-compare <- function(x) {
+## Loo funktsioon joonistamiseks ja joonista
+võrdleMaj <- function(x) {
   
   # Määra x skaala puktid
   skaala <- pretty(vrMaj[, x])
@@ -41,7 +40,7 @@ compare <- function(x) {
   ggplot(vrMaj) + aes_string(x = 'tegevusala.laiem', y = x, color = 'tegevusala.laiem') +
     geom_jitter(width = .4, alpha = .3) + 
     geom_boxplot(width = .2, alpha = .6, outlier.colour = NA) + 
-    labs(title = paste("Meetmes 1.2 osalenud ja teiste põllumajandusettevõtjate", 
+    labs(title = paste("Meetmes 1.2 osalenud ja teiste põllumajandusettevõtete", 
                        sub("\\.", " ", x), 
                        "(2007 - 2015 keskmine)"), 
          caption = "Allikas: Äriregister") + 
@@ -69,22 +68,9 @@ compare <- function(x) {
           strip.background = element_blank(), 
           strip.text = element_text(size = 12))
 }
-plotMaj <- lapply(names(vrMaj)[4:ncol(vrMaj)], compare)
+plotMaj <- lapply(names(vrMaj)[4:ncol(vrMaj)], võrdleMaj)
 names(plotMaj) <- names(vrMaj)[4:ncol(vrMaj)]
 
-
-### Loo funktsioon, mis loob näitajate kohta joonised
-plotlyMaj <- function(ind) {
-  plot_ly(vrMaj, y = ~get(ind), color = ~osalenu, 
-          type = 'box', boxpoints = 'all', jitter = .5, pointpos = -2) %>% 
-  layout(yaxis = list(title = Proper(ind)))
-}
-
-### Rakenda funktsiooni näitajatele
-plyMaj <- list()
-for (näitaja in names(vrMaj)[3:ncol(vrMaj)]) {
-  plyMaj[[näitaja]] <- plotlyMaj(näitaja)
-}
 
 # Tegevusalade võrdlus ----------
 
@@ -94,18 +80,49 @@ vrTeg <- vrTeg[!duplicated(vrTeg$kood), ]
 
 vrTeg <- as.data.frame.matrix(
   prop.table(table(
-    vrTeg$tegevusala, ifelse(vrTeg$osalenu, 'Osalenud', 'Teised')), 2))
+    vrTeg$tegevusala, ifelse(vrTeg$osalenu, 'osalenud', 'teised')), 2))
 vrTeg$tegevusala <- rownames(vrTeg)
 
+## Määra skaala
+skaala <- seq(0, round(max(vrTeg[,1:2]), digits = 1), .05)
 
-maks <- max(vrTeg[,1:2])
+## Jäta alles tegevusalade nimetused vaid siis, kui osakaaludes on erinevus
+vrTeg$tegevusala <- ifelse(abs(vrTeg$teised - vrTeg$osalenud) > .02, vrTeg$tegevusala, NA)
 
-## 
-plyTeg <- plot_ly(vrTeg, x = ~Teised, y = ~Osalenud, text = ~paste(tegevusala),
-                  type = 'scatter', mode = 'markers') %>% 
-  layout(showlegend = F) %>% 
-  add_trace(x = c(0, maks), y = c(0, maks), mode =  'lines', text = NULL)
+## Loo funktsioon joonistamiseks ja joonista
+plotTeg <- ggplot(vrTeg) + aes(x = teised, y = osalenud) + 
+  geom_abline(intercept = 0, slope = 1, color = 'gray80') + 
+  geom_point(size = 2) + 
+  geom_text(aes(label = tegevusala), hjust = .02, vjust = -.4, 
+            family = 'Roboto Condensed', alpha = .6) + 
+  labs(title = paste("Meetmes 1.2 osalenud ja teiste põllumajandusettevõtete tegevusalad"), 
+       subtitle = "Diagonaaljoonest kõrgemal olevad tegevusalad on osalenute seas rohkem levinud ja vastupidi. Välja on toodud tegevusalad, mille puhul erinevus oli üle 2%", 
+       caption = "Allikas: Äriregister") + 
+  scale_x_continuous(breaks = skaala, 
+                   labels = Perc(skaala), 
+                   name = paste0("Teised (n=", 
+                                 length(unique(majAr$kood[!(majAr$osalenu)])), ")")) + 
+  scale_y_continuous(breaks = skaala, 
+                     labels = Perc(skaala), 
+                     name = paste0("Osalenud (n=", 
+                                   length(unique(majAr$kood[majAr$osalenu])), ")")) + 
+  theme(text = element_text(family = 'Roboto Condensed', size = 12), 
+        axis.text = element_text(size = 10), 
+        axis.ticks = element_blank(), 
+        legend.background = element_rect(fill = NA, color = NA, size = .1),
+        legend.key = element_blank(), 
+        panel.background = element_rect(fill = NA), 
+        panel.border = element_blank(), 
+        panel.grid = element_blank(), 
+        panel.grid.major.x = element_line(color = 'gray80'),
+        panel.grid.major.y = element_line(color = 'gray80'),
+        panel.spacing = unit(30, "pt"), 
+        plot.background = element_rect(fill = 'white'),
+        plot.title = element_text(size = 16), 
+        plot.caption = element_text(size = 10), 
+        strip.background = element_blank(), 
+        strip.text = element_text(size = 12))
 
 
 # Salvestamine ----------
-save(plyMaj, plyTeg, file = 'võrdlus.Rda')
+save(plotMaj, plotTeg, file = 'võrdlus.Rda')

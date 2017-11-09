@@ -32,7 +32,7 @@ extTs <- function(andmed, näitaja, aastad) {
 }
 
 
-# Joonista iga näitaja kohta joonis ja lisa listi ----------
+# Loo funktsioon joonistamiseks ja joonista ----------
 
 teeAegrida <- function(x) {
   
@@ -59,7 +59,7 @@ teeAegrida <- function(x) {
                alpha = .8, size = 2, color = 'gray10') + 
     geom_line(data = keskmine, aes(x = aasta, y = x), 
               alpha = .8, size = 1.2, color = 'gray10') + 
-    labs(title = paste("Meetmes 1.2 osalenud ja teiste põllumajandusettevõtjate", 
+    labs(title = paste("Meetmes 1.2 osalenud ja teiste põllumajandusettevõtete", 
                        sub("\\.", " ", x)), 
          caption = "Allikas: Äriregister") + 
     scale_color_brewer(name = "Tegevusala", palette = 'Set2') + 
@@ -86,9 +86,8 @@ teeAegrida <- function(x) {
           strip.background = element_blank(), 
           strip.text = element_text(size = 12))
 }
-
-plotAegread <- lapply(names(majAr[8:10]), teeAegrida)
-names(plotAegread) <- names(majAr[8:10])
+plotAegread <- lapply(names(majAr[7:ncol(majAr)]), teeAegrida)
+names(plotAegread) <- names(majAr[7:ncol(majAr)])
 
 # Salvesta ----------
 save(plotAegread, file = 'aegread.Rda')
