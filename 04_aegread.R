@@ -90,4 +90,5 @@ plotAegread <- lapply(names(majAr[7:ncol(majAr)]), teeAegrida)
 names(plotAegread) <- names(majAr[7:ncol(majAr)])
 
 # Salvesta ----------
+
 save(plotAegread, file = 'aegread.Rda')

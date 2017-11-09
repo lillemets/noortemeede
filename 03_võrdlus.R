@@ -125,4 +125,5 @@ plotTeg <- ggplot(vrTeg) + aes(x = teised, y = osalenud) +
 
 
 # Salvestamine ----------
+
 save(plotMaj, plotTeg, file = 'võrdlus.Rda')
