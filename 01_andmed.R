@@ -31,8 +31,14 @@ emtakid <- readRDS('majandusandmed/emtak.Rds')
 majAr$tegevusala <- emtakid$tegevusala[
   match(substr(majAr$emtak, 1, 5), emtakid$emtak)]
 
+# Lisa laiem tegevusala
+majAr$tegevusala.laiem <- emtakid$tegevusala[
+    match(substr(majAr$emtak, 1, 3), emtakid$emtak)]
+majAr$tegevusala.laiem <- paste0(substr(majAr$tegevusala.laiem, 1, 12), "...")
+
 ## Jätta alles vaid põllumajandusliku tegevusalaga read
-majAr <- majAr[!is.na(majAr$emtak) & substr(majAr$emtak, 1, 2) == "01", ]
+majAr <- majAr[!is.na(majAr$emtak) & substr(majAr$emtak, 1, 2) == "01" & 
+                   substr(majAr$emtak, 1, 3) != "017", ] # Eemalda ka jahindus
 
 
 # Arvuta näitajate väärtused ----------

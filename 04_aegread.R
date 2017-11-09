@@ -34,43 +34,41 @@ extTs <- function(andmed, näitaja, aastad) {
 
 # Joonista iga näitaja kohta joonis ja lisa listi ----------
 
-plotAegread <- list()
-
-for (näitaja in names(majAr[7:ncol(majAr)])) {
+teeAegrida <- function(x) {
   
   # Tekita sobiv aegrida
-  andmed <- extTs(majAr, näitaja, 2010:2014)
+  andmed <- extTs(majAr, x, 2010:2014)
   
   # Arvuta mediaanväärtused aastate ja osalemise lõikes
-  keskmine <- aggregate(andmed[, näitaja], 
+  keskmine <- aggregate(andmed[, x], 
                       by = list(aasta = andmed$aasta, osalenu = andmed$osalenu), 
                       median, na.rm = T)
-  ## Eemalda näitajalt äärmuslikud väärtused
-  andmed[, näitaja] <- ifelse(andmed[, näitaja] %in% boxplot.stats(andmed[, näitaja])$out, 
-                              NA, 
-                              andmed[, näitaja])
   
-  # Määra näitaja skaala puktid
-  skaala <- pretty(andmed[, näitaja])
+  ## Eemalda xlt äärmuslikud väärtused
+  andmed[, x] <- ifelse(andmed[, x] %in% boxplot.stats(andmed[, x])$out, 
+                              NA, 
+                              andmed[, x])
+  
+  # Määra x skaala puktid
+  skaala <- pretty(andmed[, x])
   
   # Joonista
-  plotAegread[[näitaja]] <- 
-    ggplot(andmed) + aes_string(x = 'aasta', y = näitaja) +
-    geom_jitter(aes(color = substr(emtak, 1, 3)), width = .2, alpha = .5) + 
+  ggplot(andmed) + aes_string(x = 'aasta', y = x) +
+    geom_jitter(aes(color = tegevusala.laiem), width = .2, alpha = .5) + 
     geom_point(data = keskmine, aes(x = aasta, y = x), 
                alpha = .8, size = 2, color = 'gray10') + 
     geom_line(data = keskmine, aes(x = aasta, y = x), 
               alpha = .8, size = 1.2, color = 'gray10') + 
     labs(title = paste("Meetmes 1.2 osalenud ja teiste põllumajandusettevõtjate", 
-                       sub("\\.", " ", näitaja)), 
+                       sub("\\.", " ", x)), 
          caption = "Allikas: Äriregister") + 
-    scale_color_brewer(name = "EMTAK", palette = 'Set2') + 
+    scale_color_brewer(name = "Tegevusala", palette = 'Set2') + 
     scale_x_continuous(name = NULL) + 
     scale_y_continuous(breaks = skaala, 
                        labels = format(skaala, big.mark = " ", scientific = F), 
-                       name = Proper(sub("\\.", " ", näitaja))) + 
+                       name = Proper(sub("\\.", " ", x))) + 
     facet_grid(ifelse(osalenu, 
-                      paste0("Osalenud (n =", length(unique(andmed$kood[andmed$osalenu])), ")"),
+                      paste0("Osalenud (n=", length(unique(andmed$kood[andmed$osalenu])), ")"),
                             paste0("Teised (n=", length(unique(andmed$kood[!(andmed$osalenu)])), ")")) ~ ., 
                scales = 'free') + 
     theme(text = element_text(family = 'Roboto Condensed', size = 12), 
@@ -89,6 +87,8 @@ for (näitaja in names(majAr[7:ncol(majAr)])) {
           strip.text = element_text(size = 12))
 }
 
+plotAegread <- lapply(names(majAr[8:10]), teeAegrida)
+names(plotAegread) <- names(majAr[8:10])
 
 # Salvesta ----------
 save(plotAegread, file = 'aegread.Rda')
