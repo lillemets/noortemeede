@@ -39,6 +39,9 @@ teeAegrida <- function(x) {
   # Tekita sobiv aegrida
   andmed <- extTs(majAr, x, 2010:2014)
   
+  # Joonista vaid siis, kui tabel tühi ei ole
+  if (nrow(andmed) > 0) {
+  
   # Arvuta mediaanväärtused aastate ja osalemise lõikes
   keskmine <- aggregate(andmed[, x], 
                       by = list(aasta = andmed$aasta, osalenu = andmed$osalenu), 
@@ -55,12 +58,11 @@ teeAegrida <- function(x) {
   # Joonista
   ggplot(andmed) + aes_string(x = 'aasta', y = x) +
     geom_jitter(aes(color = tegevusala.laiem), width = .2, alpha = .5) + 
-    geom_point(data = keskmine, aes(x = aasta, y = x), 
-               alpha = .8, size = 2, color = 'gray10') + 
     geom_line(data = keskmine, aes(x = aasta, y = x), 
-              alpha = .8, size = 1.2, color = 'gray10') + 
-    labs(title = paste("Meetmes 1.2 osalenud ja teiste põllumajandusettevõtete", 
-                       sub("\\.", " ", x)), 
+              size = 1.2, color = 'gray30') + 
+    labs(#title = paste("Meetmes 1.2 osalenud ja teiste põllumajandusettevõtete", 
+         #              sub("\\.", " ", x)), 
+         subtitle = "",
          caption = "Allikas: Äriregister") + 
     scale_color_brewer(name = "Tegevusala", palette = 'Set2') + 
     scale_x_continuous(name = NULL) + 
@@ -85,9 +87,13 @@ teeAegrida <- function(x) {
           plot.caption = element_text(size = 10), 
           strip.background = element_blank(), 
           strip.text = element_text(size = 12))
+  
+  } else {
+    return("Joonise koostamiseks puudusid andmeid.")
+  }
 }
-plotAegread <- lapply(names(majAr[7:ncol(majAr)]), teeAegrida)
-names(plotAegread) <- names(majAr[7:ncol(majAr)])
+plotAegread <- lapply(names(majAr[which(names(majAr) == 'müügitulu'):ncol(majAr)]), teeAegrida)
+names(plotAegread) <- names(majAr[which(names(majAr) == 'müügitulu'):ncol(majAr)])
 
 # Salvesta ----------
 

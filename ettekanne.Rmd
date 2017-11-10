@@ -1,74 +1,122 @@
 ---
 title: "Põllumajandusliku tegevusega alustava noore ettevõtja toetus"
-author: "Jüri Lillemets \nEesti Maaülikool"
+author: "Jüri Lillemets\n Eesti Maaülikool"
 date: 21. november 2017
 output: 
   revealjs::revealjs_presentation:
-    incremental: true
-    theme: white
-    transition: slide
+    css: minimal.css
+    center: true
 ---
 
 ```{r setup, include=FALSE}
 # Seaded
 knitr::opts_chunk$set(include = T, eval = T, echo = F, message = F, warning = F, 
-                      fig.asp = .5, fig.width = 10)
+                      fig.width = 8)
 
 # Töökaust
 knitr::opts_knit$set(root.dir = '/home/jrl/work/noortemeede') 
 
 # Laadi pakid
-library('plotly')
+library('ggplot2')
 
 # Laadi objektid
-load('võrdlus.Rda')
+load('osakaal.Rda');load('võrdlus.Rda');load('aegread.Rda')
 ```
 
 # Mis toetus?
 
+---
+
 Meede "Noorte põllumajandustootjate tegevuse alustamine"
 
--Eesti maaelu arengukava 2007-2013 meede 1.2
--Eesti maaelu arengukava 2014-2020 meede 6.1
+- Eesti maaelu arengukava 2007-2013 meede 1.2
+- Eesti maaelu arengukava 2014-2020 meede 6.1
 
 # Miks toetus?
 
-Meetme üldeesmärk oli noorte põllumajandustootjate *tegevuse alustamise hõlbustamine* ja *põlvkondade vahetusele kaasaaitamine* põllumajanduses.
+---
 
-Miinimumnõuded ... Füüsilisest isikust ettevõtjal või osaühingu kõigil osanikel peavad olema *ametialased oskused ja pädevus* ...
+Meetme üldeesmärk oli noorte põllumajandustootjate **tegevuse alustamise hõlbustamine** ja **põlvkondade vahetusele kaasaaitamine** põllumajanduses.
 
-## Noored põllumajandustootmises Euroopas
+Miinimumnõuded ... Füüsilisest isikust ettevõtjal või osaühingu kõigil osanikel peavad olema **ametialased oskused ja pädevus** ...
 
-``` {r noorte_kaart}
+## Noorte põllumajandusettevõtete juhtide osakaal 2013
+
+``` {r noorte_osakaal}
+plotNoored
 ```
 
-## Noorte osakaalu muutus põllumajandustootmises
+## Noorte põllumajandusettevõtete juhtide osakaalu muutus 2005 - 2013
 
 ``` {r noorte_muutus}
+plotMuutus
+```
+
+## Põllumajandusettevõtete juhtide vanus Eestis
+
+``` {r vanused_eestis}
+plotVanused
 ```
 
 # Keda on toetatud?
 
-## Toetatud ettevõtjate majanduslik suurus
+## Müügitulu (2007 - 2015 keskmine)
 
-``` {r majanduslik_suurus}
-plyMaj$müügitulu
-plyMaj$võlakordaja
+``` {r vrMüügitulu} 
+plotMaj$müügitulu
 ```
 
-## Toetatud ettevõtjate tegevusalad
+## Varad (2007 - 2015 keskmine)
+
+``` {r vrVara} 
+plotMaj$vara
+```
+
+## Kohustused (2007 - 2015 keskmine)
+
+``` {r vrKohustused} 
+plotMaj$kohustused
+```
+
+## Tegevusalade osakaal
 
 ``` {r tegevusalad}
+plotTeg
 ```
 
 # Kuidas on läinud?
 
-Milliseid näitajaid vaadata?
+## Müügitulu
 
-``` {r tegevusalad}
+``` {r müügitulu}
+plotAegread$müügitulu
 ```
 
-# Milline on majanduslik mõju?
+## Puhaskasum
+
+``` {r puhaskasum}
+plotAegread$puhaskasum
+```
+
+## Võlakordaja
+
+``` {r võlakordaja}
+plotAegread$võlakordaja
+```
+
+## Vara rentaablus
+
+``` {r vara.rentaablus}
+plotAegread$vara.rentaablus
+```
+
+## Tööjõukulud
+
+``` {r tööjõukulud}
+plotAegread$tööjõukulud
+```
+
+# Milline on mõju?
 
 ``` {r }
 ```

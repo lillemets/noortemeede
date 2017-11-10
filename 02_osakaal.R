@@ -71,18 +71,18 @@ baseplot <-
 plotNoored <- baseplot + 
   geom_polygon(aes(fill = noored)) + 
   geom_path(color = 'grey40', size = .1) + 
-  scale_fill_brewer(name = "Osakaal\n2013", 
+  scale_fill_brewer(name = "Alla 35-aastaste \nosakaal 2013", 
                     palette = 'RdYlGn', na.value = 'grey80') +
-  labs(title = "Alla 35-aastaste põllumajandusettevõtete juhtide osakaal", 
+  labs(#title = "Alla 35-aastaste põllumajandusettevõtete juhtide osakaal", 
        caption = "Allikas: Eurostat")
 
 ## Noorte osakaalu muutus
 plotMuutus <- baseplot + 
   geom_polygon(aes(fill = muutus)) + 
   geom_path(color = 'grey40', size = .1) + 
-  scale_fill_brewer(name = "Osakaalu\nmuutus\n2005 - 2013", 
+  scale_fill_brewer(name = "Alla 35-aastaste \nosakaalu \nmuutus \n2005-2013", 
                     palette = 'RdYlGn', na.value = 'grey80') +
-  labs(title = "Alla 35-aastaste põllumajandusettevõtete juhtide osakaalu muutus", 
+  labs(#title = "Alla 35-aastaste põllumajandusettevõtete juhtide osakaalu muutus", 
        caption = "Allikas: Eurostat")
   
 # Muutus Eestis ----------
@@ -96,7 +96,7 @@ vanusEst$age <- factor(rev(vanusEst$age),
 plotVanused <- 
 ggplot(vanusEst) + aes(x = time, y = value, fill = age) + 
   geom_area(position = 'stack', alpha = .8) + 
-  labs(title = "Eesti põllumajandusettevõtete juhtide vanuseiline jaotus", 
+  labs(#title = "Eesti põllumajandusettevõtete juhtide vanuseline jaotus", 
        caption = "Allikas: Eurostat") + 
   scale_fill_brewer(palette = 'RdYlGn', name = "Vanuse-\ngrupp") + 
   scale_x_continuous(breaks = unique(vanusEst$time), name = NULL) + 
@@ -122,4 +122,4 @@ ggplot(vanusEst) + aes(x = time, y = value, fill = age) +
 
 # Salvesta ----------
 
-save(plotNoored, plotMuutus, plotVanused, file = 'osakaal.Rds')
+save(plotNoored, plotMuutus, plotVanused, file = 'osakaal.Rda')
