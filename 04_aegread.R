@@ -36,10 +36,10 @@ extTs <- function(andmed, näitaja, aastad) {
 
 teeAegrida <- function(x) {
   
-  # Tekita sobiv aegrida
+  ## Tekita sobiv aegrida
   andmed <- extTs(majAr, x, 2010:2014)
   
-  # Joonista vaid siis, kui tabel tühi ei ole
+  ## Joonista vaid siis, kui tabel tühi ei ole
   if (nrow(andmed) > 0) {
   
   ## Eemalda xlt äärmuslikud väärtused
@@ -47,31 +47,24 @@ teeAegrida <- function(x) {
                               NA, 
                               andmed[, x])
   
-  # Määra x skaala puktid
-  skaala <- pretty(andmed[, x])
+  ## Kohanda osalenu näitaja väärtusi
+  andmed$osalenu <- ifelse(andmed$osalenu, "Osalenud", "Teised")
   
-  # Joonista
-  ggplot(andmed) + aes_string(x = 'aasta', y = x, color = 'tegevusala.laiem') +
-    #geom_jitter(width = .3, alpha = .3) + 
-    #geom_line(aes(group = kood), alpha = .3) + 
-    geom_line(stat = 'summary', fun.y = 'mean', 
-              size = 1.2, color = 'gray30') + 
+  ## Joonista
+  ggplot(andmed) + aes_string(x = 'aasta', y = x, color = 'osalenu') +
+    expand_limits(y = 0) + 
+    geom_line(stat = 'summary', fun.y = 'mean', size = 1.2) + 
     labs(#title = paste("Meetmes 1.2 osalenud ja teiste põllumajandusettevõtete", 
          #              sub("\\.", " ", x)), 
-         subtitle = "Joon esindab keskmise väärtuse muutust.",
          caption = "Allikas: Äriregister") + 
-    scale_color_brewer(name = "Tegevusala", palette = 'Set2') + 
+    scale_color_brewer(name = NULL, palette = 'Set2') + 
     scale_x_continuous(name = NULL) + 
-    scale_y_continuous(breaks = skaala, 
-                       labels = format(skaala, big.mark = " ", scientific = F), 
+    scale_y_continuous(labels = function(x) format(x, big.mark = " ", scientific = F), 
                        name = Proper(sub("\\.", " ", x))) + 
-    facet_grid(ifelse(osalenu, 
-                      paste0("Osalenud (n=", length(unique(andmed$kood[andmed$osalenu])), ")"),
-                            paste0("Teised (n=", length(unique(andmed$kood[!(andmed$osalenu)])), ")")) ~ ., 
-               scales = 'free') + 
     theme(text = element_text(family = 'Roboto Condensed', size = 12), 
           axis.text = element_text(size = 10), 
           axis.ticks = element_blank(), 
+          legend.position = 'top', 
           legend.background = element_rect(fill = NA, color = NA, size = .1),
           legend.key = element_blank(), 
           panel.background = element_rect(fill = NA),
