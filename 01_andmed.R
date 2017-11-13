@@ -10,33 +10,38 @@ library('dplyr')
 
 # Laadi ja kohanda andmed ----------
 
-## Sisesta majandusaasta aruanded
-majAr <- readRDS('majandusandmed/majandusaasta_aruanded.Rds')
+## Sisesta tabelid
+majAr <- readRDS('majandusandmed/majandusaasta_aruanded.Rds') # Majandusaasta aruanded
+majStr <- readRDS('majandusandmed/boa_str_171103.Rds') # Ettevõtete struktuursed näitajad
 
 ## Jäta alles vaid aasta lõpu andmed
 majAr <- majAr[majAr$seisuga == 'lõpp', ]
 majAr <- majAr[, -3]
+
+# Sisesta ettevõtte viimane aasta
+viimane <- aggregate(majAr$aasta, by = list(kood = majAr$kood), max)
+majAr$viimane <- viimane$x[match(majAr$kood, viimane$kood)]
 
 ## Sisesta meetmes 1.2 osalenud
 majAr$osalenu <- majAr$kood %in% readRDS('noortemeede/osalenud.Rds')
 ## Mitme osalenu kohta on andmed olemas?
 length(unique(majAr$kood[majAr$osalenu]))
 
-## Sisesta taotluste andmed
-taotlused <- readRDS('mak0713/taotlused.Rds')
+## Sisesta ettevõtte asutamine
+taotlused <- readRDS('mak0713/taotlused.Rds') # Taotluste andmed
+majAr$asutamine <- majStr$asutamine[match(majAr$kood, majStr$kood)] 
 
 ## Sisesta EMTAK koodid
-majEsi <- readRDS('majandusandmed/boa_4_171103.Rds')
-majAr$emtak <- majEsi$emtak[match(paste(majAr$kood, majAr$aasta), paste(majEsi$kood, majEsi$aasta))] 
-## Lisa tegevusala EMTAK koodi alguse järgi
+majAr$emtak <- majStr$emtak[match(paste(majAr$kood, majAr$aasta), paste(majStr$kood, majStr$aasta))] 
+### Lisa tegevusala EMTAK koodi alguse järgi
 emtakid <- readRDS('majandusandmed/emtak.Rds')
 majAr$tegevusala <- emtakid$tegevusala[
   match(substr(majAr$emtak, 1, 5), emtakid$emtak)]
-## Lisa laiem tegevusala
+### Lisa laiem tegevusala
 majAr$tegevusala.laiem <- emtakid$tegevusala[
     match(substr(majAr$emtak, 1, 3), emtakid$emtak)]
 majAr$tegevusala.laiem <- paste0(substr(majAr$tegevusala.laiem, 1, 12), "...")
-## Jätta alles vaid põllumajandusliku tegevusalaga read
+### Jätta alles vaid põllumajandusliku tegevusalaga read
 majAr <- majAr[!is.na(majAr$emtak) & substr(majAr$emtak, 1, 2) == "01" & 
                    substr(majAr$emtak, 1, 3) != "017", ] # Eemalda ka jahindus
 

@@ -62,6 +62,12 @@ plotVanused
 
 # Keda on toetatud?
 
+## Asutamise aeg
+
+``` {r vrAsutamine} 
+plotAsut
+```
+
 ## Müügitulu (2007 - 2015 keskmine)
 
 ``` {r vrMüügitulu} 

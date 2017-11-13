@@ -2,7 +2,7 @@
 setwd('/home/jrl/work/noortemeede')
 
 # Laadi paketid
-library('dplyr');library('plotly')
+library('ggplot2')
 
 # Laadi objektid
 load('/home/jrl/data/objects/funs.Rda')
@@ -11,6 +11,36 @@ load('/home/jrl/data/objects/funs.Rda')
 # Sisesta andmed ----------
 
 majAr <- readRDS('majandusaasta_aruanded.Rds')
+
+
+# Ettevõtte asutamisaeg ----------
+
+plotAsut <- ggplot(majAr[majAr$aasta == majAr$viimane, ]) + aes(x = asutamine) + 
+  geom_freqpoly() + 
+  geom_vline(aes(xintercept = as.Date('2015-08-17')), color = 'red') + 
+  geom_vline(aes(xintercept = as.Date('2008-10-06')), color = 'red') + 
+  scale_x_date(name = "Ettevõtte asutamise aasta", date_breaks = "year", date_labels = "%Y") +
+  scale_y_continuous(name = "Arv") + 
+  facet_grid(ifelse(osalenu, 
+                    paste0("Osalenud (n=", nrow(majAr[majAr$osalenu & 
+                                                        majAr$aasta == majAr$viimane, ]), ")"),
+                    paste0("Teised (n=", nrow(majAr[!(majAr$osalenu) & 
+                                                      majAr$aasta == majAr$viimane, ]), ")")) ~ ., 
+             scales = 'free') + 
+  theme(text = element_text(family = 'Roboto Condensed', size = 12), 
+        axis.text = element_text(size = 10), 
+        axis.ticks = element_blank(), 
+        legend.background = element_rect(fill = NA, color = NA, size = .1),
+        legend.key = element_blank(), 
+        panel.background = element_rect(fill = NA),
+        panel.border = element_blank(),
+        panel.grid = element_blank(), 
+        panel.spacing = unit(30, "pt"), 
+        plot.background = element_rect(fill = 'white'),
+        plot.title = element_text(size = 16), 
+        plot.caption = element_text(size = 10), 
+        strip.background = element_blank(), 
+        strip.text = element_text(size = 12))
 
 
 # Majandusliku suuruse võrdlus ----------
@@ -127,4 +157,4 @@ plotTeg <- ggplot(vrTeg) + aes(x = teised, y = osalenud) +
 
 # Salvestamine ----------
 
-save(plotMaj, plotTeg, file = 'võrdlus.Rda')
+save(plotAsut, plotMaj, plotTeg, file = 'võrdlus.Rda')
