@@ -1,6 +1,8 @@
 ---
-title: "Põllumajandusliku tegevusega alustava noore ettevõtja toetus"
-author: "Jüri Lillemets\n Eesti Maaülikool"
+title: Põllumajandusliku tegevusega alustava noore ettevõtja toetus
+author: | 
+  | Jüri Lillemets 
+  | Eesti Maaülikool
 date: 21. november 2017
 output: 
   revealjs::revealjs_presentation:
@@ -66,7 +68,7 @@ plotVanused
 plotMaj$müügitulu
 ```
 
-## Varad (2007 - 2015 keskmine)
+## Vara (2007 - 2015 keskmine)
 
 ``` {r vrVara} 
 plotMaj$vara

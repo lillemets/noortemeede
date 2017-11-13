@@ -42,11 +42,6 @@ teeAegrida <- function(x) {
   # Joonista vaid siis, kui tabel tühi ei ole
   if (nrow(andmed) > 0) {
   
-  # Arvuta mediaanväärtused aastate ja osalemise lõikes
-  keskmine <- aggregate(andmed[, x], 
-                      by = list(aasta = andmed$aasta, osalenu = andmed$osalenu), 
-                      median, na.rm = T)
-  
   ## Eemalda xlt äärmuslikud väärtused
   andmed[, x] <- ifelse(andmed[, x] %in% boxplot.stats(andmed[, x])$out, 
                               NA, 
@@ -56,13 +51,14 @@ teeAegrida <- function(x) {
   skaala <- pretty(andmed[, x])
   
   # Joonista
-  ggplot(andmed) + aes_string(x = 'aasta', y = x) +
-    geom_jitter(aes(color = tegevusala.laiem), width = .2, alpha = .5) + 
-    geom_line(data = keskmine, aes(x = aasta, y = x), 
+  ggplot(andmed) + aes_string(x = 'aasta', y = x, color = 'tegevusala.laiem') +
+    #geom_jitter(width = .3, alpha = .3) + 
+    #geom_line(aes(group = kood), alpha = .3) + 
+    geom_line(stat = 'summary', fun.y = 'mean', 
               size = 1.2, color = 'gray30') + 
     labs(#title = paste("Meetmes 1.2 osalenud ja teiste põllumajandusettevõtete", 
          #              sub("\\.", " ", x)), 
-         subtitle = "",
+         subtitle = "Joon esindab keskmise väärtuse muutust.",
          caption = "Allikas: Äriregister") + 
     scale_color_brewer(name = "Tegevusala", palette = 'Set2') + 
     scale_x_continuous(name = NULL) + 
@@ -89,7 +85,7 @@ teeAegrida <- function(x) {
           strip.text = element_text(size = 12))
   
   } else {
-    return("Joonise koostamiseks puudusid andmeid.")
+    return("Joonise koostamiseks puudusid andmed.")
   }
 }
 plotAegread <- lapply(names(majAr[which(names(majAr) == 'müügitulu'):ncol(majAr)]), teeAegrida)
