@@ -59,13 +59,13 @@ body {
   font-size: 1.6em; }
 
 .reveal h2 {
-  font-size: 1.4em; }
-
-.reveal h3 {
   font-size: 1.2em; }
 
+.reveal h3 {
+  font-size: 1.0em; }
+
 .reveal h4 {
-  font-size: 1em; }
+  font-size: 0.8em; }
 
 /*********************************************
  * OTHER

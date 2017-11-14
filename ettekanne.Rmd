@@ -8,6 +8,7 @@ output:
   revealjs::revealjs_presentation:
     css: minimal.css
     center: true
+    smart: false
 ---
 
 ```{r setup, include=FALSE}
@@ -34,6 +35,8 @@ Meede "Noorte põllumajandustootjate tegevuse alustamine"
 - Eesti maaelu arengukava 2007-2013 meede 1.2
 - Eesti maaelu arengukava 2014-2020 meede 6.1
 
+Ühekordne toetus kuni 40 000 eurot.
+
 # Miks toetus?
 
 ---
@@ -45,13 +48,13 @@ Miinimumnõuded ... Füüsilisest isikust ettevõtjal või osaühingu kõigil os
 ## Noorte põllumajandusettevõtete juhtide osakaal 2013
 
 ``` {r noorte_osakaal}
-plotNoored
+#plotNoored
 ```
 
 ## Noorte põllumajandusettevõtete juhtide osakaalu muutus 2005 - 2013
 
 ``` {r noorte_muutus}
-plotMuutus
+#plotMuutus
 ```
 
 ## Põllumajandusettevõtete juhtide vanus Eestis
@@ -62,10 +65,10 @@ plotVanused
 
 # Keda on toetatud?
 
-## Asutamise aeg
+## Tegevuse alustamine
 
 ``` {r vrAsutamine} 
-plotAsut
+plotAsutamine
 ```
 
 ## Müügitulu (2007 - 2015 keskmine)
@@ -95,6 +98,10 @@ plotTeg
 # Kuidas on läinud?
 
 ## Müügitulu
+
+``` {r eluiga}
+plotEluiga
+```
 
 ``` {r müügitulu}
 plotAegread$müügitulu

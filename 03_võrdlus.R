@@ -15,20 +15,18 @@ majAr <- readRDS('majandusaasta_aruanded.Rds')
 
 # Ettevõtte asutamisaeg ----------
 
-plotAsut <- ggplot(majAr[majAr$aasta == majAr$viimane, ]) + aes(x = asutamine) + 
+plotAsutamine <- ggplot(majAr[majAr$aasta == majAr$viimane, ]) + aes(x = asutamine) + 
   geom_freqpoly() + 
   geom_vline(aes(xintercept = as.Date('2015-08-17')), color = 'red') + 
   geom_vline(aes(xintercept = as.Date('2008-10-06')), color = 'red') + 
   scale_x_date(name = "Ettevõtte asutamise aasta", date_breaks = "year", date_labels = "%Y") +
   scale_y_continuous(name = "Arv") + 
   facet_grid(ifelse(osalenu, 
-                    paste0("Osalenud (n=", nrow(majAr[majAr$osalenu & 
-                                                        majAr$aasta == majAr$viimane, ]), ")"),
-                    paste0("Teised (n=", nrow(majAr[!(majAr$osalenu) & 
-                                                      majAr$aasta == majAr$viimane, ]), ")")) ~ ., 
+                    paste0("Osalenud (n=", sum(osalenu), ")"),
+                    paste0("Teised (n=", sum(!osalenu), ")")) ~ ., 
              scales = 'free') + 
   theme(text = element_text(family = 'Roboto Condensed', size = 12), 
-        axis.text = element_text(size = 10), 
+        axis.text = element_text(size = 10, angle = 45), 
         axis.ticks = element_blank(), 
         legend.background = element_rect(fill = NA, color = NA, size = .1),
         legend.key = element_blank(), 
@@ -131,9 +129,9 @@ plotTeg <- ggplot(vrTeg) + aes(x = teised, y = osalenud) +
        #subtitle = "Diagonaaljoonest kõrgemal olevad tegevusalad on osalenute seas rohkem levinud ja vastupidi. Välja on toodud tegevusalad, mille puhul erinevus oli üle 2%.", 
        caption = "Allikas: Äriregister") + 
   scale_x_continuous(breaks = skaala, 
-                   labels = Perc(skaala), 
-                   name = paste0("Teised (n=", 
-                                 length(unique(majAr$kood[!(majAr$osalenu)])), ")")) + 
+                     labels = Perc(skaala), 
+                     name = paste0("Teised (n=", 
+                                   length(unique(majAr$kood[!(majAr$osalenu)])), ")")) + 
   scale_y_continuous(breaks = skaala, 
                      labels = Perc(skaala), 
                      name = paste0("Osalenud (n=", 
@@ -157,4 +155,4 @@ plotTeg <- ggplot(vrTeg) + aes(x = teised, y = osalenud) +
 
 # Salvestamine ----------
 
-save(plotAsut, plotMaj, plotTeg, file = 'võrdlus.Rda')
+save(plotAsutamine, plotMaj, plotTeg, file = 'võrdlus.Rda')

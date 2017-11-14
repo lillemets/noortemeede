@@ -5,7 +5,7 @@ rm(list = ls())
 setwd('/home/jrl/work')
 
 # Laadi pakid
-library('dplyr')
+library('dplyr');library('ggmap')
 
 
 # Laadi ja kohanda andmed ----------
@@ -53,7 +53,7 @@ otsi <- function(x) names(majAr)[grep(x, names(majAr), ignore.case = T)]
 
 ## Arvuta majandusnäitajad
 majAr <- mutate(majAr, 
-  müügitulu = X11.MÜÜGITULU.skeem.1, 
+  müügitulu = X10.MÜÜGITULU.skeem.1, 
   põhivara = X120.MATERIAALNE.PÕHIVARA.KOKKU + X130.IMMATERIAALNE.PÕHIVARA.KOKKU, 
   vara = X300.A.K.T.I.V.A.VARAD.K.O.K.K.U, 
   käibevara = vara - põhivara, 
