@@ -97,11 +97,13 @@ plotTeg
 
 # Kuidas on läinud?
 
-## Müügitulu
+## Osalenud ettevõtete eluiga
 
 ``` {r eluiga}
 plotEluiga
 ```
+
+## Müügitulu
 
 ``` {r müügitulu}
 plotAegread$müügitulu

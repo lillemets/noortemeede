@@ -47,7 +47,7 @@ plotAsutamine <- ggplot(majAr[majAr$aasta == majAr$viimane, ]) + aes(x = asutami
 vrMaj <- aggregate(majAr[, which(names(majAr) == 'müügitulu'):ncol(majAr)], 
                    by = list(kood = majAr$kood, 
                              osalenu = majAr$osalenu, 
-                             tegevusala.laiem = majAr$tegevusala.laiem), 
+                             tegevusala = majAr$tegevusala), 
                    mean, na.rm = T)
 
 ## Määra majandusnäitajatega tulbad
@@ -67,7 +67,7 @@ võrdleMaj <- function(x) {
   arvTeised <- length(vrMaj$kood[!(vrMaj$osalenu) & !is.na(vrMaj[, x])])
   
   # Joonista
-  ggplot(vrMaj) + aes_string(x = 'tegevusala.laiem', y = x, color = 'tegevusala.laiem') +
+  ggplot(vrMaj) + aes_string(x = 'tegevusala', y = x, color = 'tegevusala') +
     geom_jitter(width = .4, alpha = .3) + 
     geom_boxplot(width = .2, alpha = .6, outlier.colour = NA) + 
     labs(#title = paste("Meetmes 1.2 osalenud ja teiste põllumajandusettevõtete", 
@@ -125,9 +125,7 @@ plotTeg <- ggplot(vrTeg) + aes(x = teised, y = osalenud) +
   geom_point(size = 2) + 
   geom_text(aes(label = tegevusala), hjust = .02, vjust = -.4, 
             family = 'Roboto Condensed', alpha = .6) + 
-  labs(#title = paste("Meetmes 1.2 osalenud ja teiste põllumajandusettevõtete tegevusalad"), 
-       #subtitle = "Diagonaaljoonest kõrgemal olevad tegevusalad on osalenute seas rohkem levinud ja vastupidi. Välja on toodud tegevusalad, mille puhul erinevus oli üle 2%.", 
-       caption = "Allikas: Äriregister") + 
+  labs(caption = "Allikas: Äriregister") + 
   scale_x_continuous(breaks = skaala, 
                      labels = Perc(skaala), 
                      name = paste0("Teised (n=", 

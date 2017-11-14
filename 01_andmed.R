@@ -13,12 +13,13 @@ library('dplyr');library('ggmap')
 ## Sisesta tabelid
 majAr <- readRDS('majandusandmed/majandusaasta_aruanded.Rds') # Majandusaasta aruanded
 majStr <- readRDS('majandusandmed/boa_str_171103.Rds') # Ettevõtete struktuursed näitajad
+tegevused <- readRDS('mak0713/tegevused.Rds') # Taotluste andmed
 
 ## Jäta alles vaid aasta lõpu andmed
 majAr <- majAr[majAr$seisuga == 'lõpp', ]
 majAr <- majAr[, -3]
 
-# Sisesta ettevõtte viimane aasta
+## Sisesta ettevõtte viimane aasta
 viimane <- aggregate(majAr$aasta, by = list(kood = majAr$kood), max)
 majAr$viimane <- viimane$x[match(majAr$kood, viimane$kood)]
 
@@ -28,22 +29,36 @@ majAr$osalenu <- majAr$kood %in% readRDS('noortemeede/osalenud.Rds')
 length(unique(majAr$kood[majAr$osalenu]))
 
 ## Sisesta ettevõtte asutamine
-taotlused <- readRDS('mak0713/taotlused.Rds') # Taotluste andmed
 majAr$asutamine <- majStr$asutamine[match(majAr$kood, majStr$kood)] 
 
 ## Sisesta EMTAK koodid
 majAr$emtak <- majStr$emtak[match(paste(majAr$kood, majAr$aasta), paste(majStr$kood, majStr$aasta))] 
-### Lisa tegevusala EMTAK koodi alguse järgi
-emtakid <- readRDS('majandusandmed/emtak.Rds')
-majAr$tegevusala <- emtakid$tegevusala[
-  match(substr(majAr$emtak, 1, 5), emtakid$emtak)]
-### Lisa laiem tegevusala
-majAr$tegevusala.laiem <- emtakid$tegevusala[
-    match(substr(majAr$emtak, 1, 3), emtakid$emtak)]
-majAr$tegevusala.laiem <- paste0(substr(majAr$tegevusala.laiem, 1, 12), "...")
-### Jätta alles vaid põllumajandusliku tegevusalaga read
+## Jäta alles vaid põllumajandusliku tegevusalaga read
 majAr <- majAr[!is.na(majAr$emtak) & substr(majAr$emtak, 1, 2) == "01" & 
                    substr(majAr$emtak, 1, 3) != "017", ] # Eemalda ka jahindus
+
+## Sisesta summad
+summad <- tegevused[tegevused$meede == 1200, c('kood', 'toetuse.summa')]
+summad <- aggregate(summad$toetuse.summa, list(kood = summad$kood), sum)
+
+
+# Sisesta tegevusala ----------
+
+## Loo tabel koodidega
+emtakid <- read.csv(textConnection('emtak,tegevusala
+01111,Teraviljakasvatus
+01411,Piimakarjakasvatus
+01421,Veisekasvatus
+01501,Segapõllumajandus
+01131,Köögiviljakasvatus
+01611,Taimekasvatuse abitegevused
+01491,Mesindus'), col.names = c('emtak', 'tegevusala'), colClasses = 'character')
+
+## Lisa tegevusalad
+majAr$tegevusala <- emtakid$tegevusala[match(majAr$emtak, emtakid$emtak)]
+majAr$tegevusala <- ifelse(is.na(majAr$tegevusala) & !(majAr$emtak %in% emtakid$emtak), 
+                           "Muu tegevusala", 
+                           majAr$tegevusala) # Muu tegevusala, kui emtakid ei sisalda vastet
 
 
 # Arvuta näitajate väärtused ----------

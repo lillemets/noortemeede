@@ -2,7 +2,7 @@
 setwd('/home/jrl/work/noortemeede')
 
 # Laadi paketid
-library('tidyr');library('ggplot2');library('extrafont')
+library('dplyr');library('tidyr');library('ggplot2');library('extrafont')
 
 # Laadi objektid
 load('/home/jrl/data/objects/funs.Rda')
@@ -14,10 +14,10 @@ majAr <- readRDS('majandusaasta_aruanded.Rds')
 
 # Joonista ettevõtete eluiga ----------
 
-majAr %>% filter(osalenu == 1) %>% select(kood, aasta, asutamine, viimane) %>% 
+majAr %>% filter(osalenu == 1) %>% dplyr::select(kood, aasta, asutamine, viimane) %>% 
   group_by(kood) %>% 
   mutate(viimane = as.Date(paste0(max(aasta), '0701'), '%Y%m%d')) %>% 
-  select(-aasta) %>% distinct %>% 
+  dplyr::select(-aasta) %>% distinct %>% 
   arrange(asutamine) %>% ungroup %>% mutate(rida = group_indices(., kood)) %>% 
   gather(key = 'näitaja', value = 'väärtus', 2:3) %>% 
   mutate(näitaja = ifelse(näitaja == 'asutamine', 
@@ -96,7 +96,7 @@ teeAegrida <- function(x) {
                        name = NULL) + 
     scale_y_continuous(labels = function(x) format(x, big.mark = " ", scientific = F), 
                        name = Proper(sub("\\.", " ", x))) + 
-    facet_wrap(~tegevusala.laiem) + 
+    facet_wrap(~tegevusala) + 
     theme(text = element_text(family = 'Roboto Condensed', size = 12), 
           axis.text = element_text(size = 10), 
           axis.ticks = element_blank(), 
@@ -123,4 +123,4 @@ names(plotAegread) <- names(majAr[which(names(majAr) == 'müügitulu'):ncol(majA
 
 # Salvesta ----------
 
-save(plotAegread, file = 'aegread.Rda')
+save(plotEluiga, plotAegread, file = 'aegread.Rda')
