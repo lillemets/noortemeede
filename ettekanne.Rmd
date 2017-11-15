@@ -22,6 +22,13 @@ knitr::opts_knit$set(root.dir = '/home/jrl/work/noortemeede')
 # Laadi pakid
 library('ggplot2')
 
+# Uuenda objektid
+source('01_andmed.R')
+source('02_osakaal.R')
+source('03_võrdlus.R')
+source('04_aegread.R')
+source('05_mõju.R')
+
 # Laadi objektid
 load('osakaal.Rda');load('võrdlus.Rda');load('aegread.Rda')
 ```

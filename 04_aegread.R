@@ -96,9 +96,10 @@ teeAegrida <- function(x) {
                        name = NULL) + 
     scale_y_continuous(labels = function(x) format(x, big.mark = " ", scientific = F), 
                        name = Proper(sub("\\.", " ", x))) + 
-    facet_wrap(~tegevusala) + 
+    facet_wrap(~tegevusala, scales = 'free') + 
     theme(text = element_text(family = 'Roboto Condensed', size = 12), 
-          axis.text = element_text(size = 10), 
+          axis.text.x = element_text(size = 10, angle = 45), 
+          axis.text.y = element_text(size = 10), 
           axis.ticks = element_blank(), 
           legend.position = 'top', 
           legend.background = element_rect(fill = NA, color = NA, size = .1),

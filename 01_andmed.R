@@ -5,7 +5,7 @@ rm(list = ls())
 setwd('/home/jrl/work')
 
 # Laadi pakid
-library('dplyr');library('ggmap')
+library('dplyr')
 
 
 # Laadi ja kohanda andmed ----------
@@ -37,14 +37,15 @@ majAr$emtak <- majStr$emtak[match(paste(majAr$kood, majAr$aasta), paste(majStr$k
 majAr <- majAr[!is.na(majAr$emtak) & substr(majAr$emtak, 1, 2) == "01" & 
                    substr(majAr$emtak, 1, 3) != "017", ] # Eemalda ka jahindus
 
-## Sisesta summad
-summad <- tegevused[tegevused$meede == 1200, c('kood', 'toetuse.summa')]
-summad <- aggregate(summad$toetuse.summa, list(kood = summad$kood), sum)
+## Sisesta maksekuupäev
+maksed <- tegevused[tegevused$meede == 1200, c('kood', 'maksekuupäev')]
+maksed <- aggregate(maksed$maksekuupäev, list(kood = maksed$kood), max)
+majAr$makse <- maksed$x[match(majAr$kood, maksed$kood)]
 
 
 # Sisesta tegevusala ----------
 
-## Loo tabel koodidega
+## Loo tabel kõige sagedasemate koodidega
 emtakid <- read.csv(textConnection('emtak,tegevusala
 01111,Teraviljakasvatus
 01411,Piimakarjakasvatus
@@ -52,7 +53,8 @@ emtakid <- read.csv(textConnection('emtak,tegevusala
 01501,Segapõllumajandus
 01131,Köögiviljakasvatus
 01611,Taimekasvatuse abitegevused
-01491,Mesindus'), col.names = c('emtak', 'tegevusala'), colClasses = 'character')
+01491,Mesindus
+01461,Seakasvatus'), col.names = c('emtak', 'tegevusala'), colClasses = 'character')
 
 ## Lisa tegevusalad
 majAr$tegevusala <- emtakid$tegevusala[match(majAr$emtak, emtakid$emtak)]

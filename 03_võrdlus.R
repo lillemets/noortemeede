@@ -74,7 +74,7 @@ võrdleMaj <- function(x) {
          #              sub("\\.", " ", x), 
          #              "(2007 - 2015 keskmine)"), 
          caption = "Allikas: Äriregister") + 
-    scale_color_brewer(name = "Tegevusala", palette = 'Set2') + 
+    scale_color_brewer(name = "Tegevusala", palette = 'Set1') + 
     scale_x_discrete(labels = NULL, name = NULL) + 
     scale_y_continuous(breaks = skaala, 
                        labels = format(skaala, big.mark = " ", scientific = F), 
