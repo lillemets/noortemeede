@@ -52,7 +52,7 @@ emtakid <- read.csv(textConnection('emtak,tegevusala
 01421,Veisekasvatus
 01501,Segapõllumajandus
 01131,Köögiviljakasvatus
-01611,Taimekasvatuse abitegevused
+01611,Taimekasvatuse abi
 01491,Mesindus
 01461,Seakasvatus'), col.names = c('emtak', 'tegevusala'), colClasses = 'character')
 
@@ -61,6 +61,11 @@ majAr$tegevusala <- emtakid$tegevusala[match(majAr$emtak, emtakid$emtak)]
 majAr$tegevusala <- ifelse(is.na(majAr$tegevusala) & !(majAr$emtak %in% emtakid$emtak), 
                            "Muu tegevusala", 
                            majAr$tegevusala) # Muu tegevusala, kui emtakid ei sisalda vastet
+
+## Eemalda tegevusalad, mis osalenute seas vähe esindatud
+majAr$tegevusala <- ifelse(majAr$tegevusala == "Seakasvatus" | 
+                             majAr$tegevusala == "Taimekasvatuse abi", 
+                           "Muu tegevusala", majAr$tegevusala)
 
 
 # Arvuta näitajate väärtused ----------

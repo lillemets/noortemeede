@@ -1,8 +1,6 @@
 ---
-title: Põllumajandusliku tegevusega alustava noore ettevõtja toetus
-author: | 
-  | Jüri Lillemets 
-  | Eesti Maaülikool
+title: <b>Põllumajandusliku tegevusega alustava noore ettevõtja toetus</b>
+author: Jüri Lillemets <br>Eesti Maaülikool
 date: 21. november 2017
 output: 
   revealjs::revealjs_presentation:
@@ -22,15 +20,8 @@ knitr::opts_knit$set(root.dir = '/home/jrl/work/noortemeede')
 # Laadi pakid
 library('ggplot2')
 
-# Uuenda objektid
-source('01_andmed.R')
-source('02_osakaal.R')
-source('03_võrdlus.R')
-source('04_aegread.R')
-source('05_mõju.R')
-
 # Laadi objektid
-load('osakaal.Rda');load('võrdlus.Rda');load('aegread.Rda')
+load('osakaal.Rda');load('võrdlus.Rda');load('aegread.Rda');load('mõju.Rda')
 ```
 
 # Mis toetus?
@@ -42,32 +33,46 @@ Meede "Noorte põllumajandustootjate tegevuse alustamine"
 - Eesti maaelu arengukava 2007-2013 meede 1.2
 - Eesti maaelu arengukava 2014-2020 meede 6.1
 
+_Toetuse saajad... Põllumajandustootmisega **alustavad/tegelevad** füüsilisest isikust ettevõtjad ja füüsilisest isikust osanikega osaühingud. Taotleja võib **üle võtta** ka tegutseva põllumajandusettevõtte_
+
+_Miinimumnõuded... Füüsilisest isikust ettevõtja või osaühingu kõik osanikud on taotlemise hetkel **nooremad kui 40 aastat**_
+
+---
+
 Ühekordne toetus kuni 40 000 eurot.
+
+_Nõutav müügitulu põllumajanduslikust tegevusest taotlemisele järgneva kalendriaasta lõpuks on **vähemalt 2400 eurot**_
+
+_... toetuse saamisele järgneva viienda kalendriaasta lõpuks peab taotleja aastamüügitulu põllumajanduslikust tegevusest moodustama **vähemalt 80% saadud toetuse summast**_ (32 000 eurot)
 
 # Miks toetus?
 
 ---
 
-Meetme üldeesmärk oli noorte põllumajandustootjate **tegevuse alustamise hõlbustamine** ja **põlvkondade vahetusele kaasaaitamine** põllumajanduses.
+Meetme üldeesmärk oli _noorte põllumajandustootjate **tegevuse alustamise hõlbustamine** ja **põlvkondade vahetusele kaasaaitamine** põllumajanduses_.
 
-Miinimumnõuded ... Füüsilisest isikust ettevõtjal või osaühingu kõigil osanikel peavad olema **ametialased oskused ja pädevus** ...
+_Miinimumnõuded... Füüsilisest isikust ettevõtjal või osaühingu kõigil osanikel peavad olema **ametialased oskused ja pädevus**..._
 
 ## Noorte põllumajandusettevõtete juhtide osakaal 2013
 
 ``` {r noorte_osakaal}
-#plotNoored
+plotNoored
+# Eestis 2013. aastal 7,5%
 ```
 
 ## Noorte põllumajandusettevõtete juhtide osakaalu muutus 2005 - 2013
 
 ``` {r noorte_muutus}
-#plotMuutus
+plotMuutus
+# Eestis oli kasv 0,5%
 ```
 
 ## Põllumajandusettevõtete juhtide vanus Eestis
 
 ``` {r vanused_eestis}
 plotVanused
+# Eesti kasv tuli vanemate vähenemise arvelt
+# Iga-aastase 2-3% kasvu asemel ei muutunud midagi
 ```
 
 # Keda on toetatud?
@@ -78,29 +83,41 @@ plotVanused
 plotAsutamine
 ```
 
-## Müügitulu (2007 - 2015 keskmine)
-
-``` {r vrMüügitulu} 
-plotMaj$müügitulu
-```
-
-## Vara (2007 - 2015 keskmine)
-
-``` {r vrVara} 
-plotMaj$vara
-```
-
-## Kohustused (2007 - 2015 keskmine)
-
-``` {r vrKohustused} 
-plotMaj$kohustused
-```
-
 ## Tegevusalade osakaal
 
 ``` {r tegevusalad}
 plotTeg
 ```
+
+## Müügitulu (2007 - 2016 keskmine)
+
+``` {r vrMüügitulu} 
+plotMaj$müügitulu
+```
+
+## Tööjõukulud (2007 - 2016 keskmine)
+
+``` {r vrtööjõukulud}
+plotMaj$tööjõukulud
+```
+
+## Vara rentaablus (2007 - 2016 keskmine)
+
+``` {r vrVaraRentaablus} 
+plotMaj$vara.rentaablus
+```
+
+---
+
+Noortalunike ettevõtted on valdavalt noored ja asutatud meetme rakendamise ajal
+
+Noortalunike seas on keskmisest rohkem mesinduse ning köögivlja- ja veisekasvatusega tegelejaid, vähem levinud on aga piimakarja kasvatamine
+
+Müügitulu järgi on tegemist väiksemate ettevõtetega ning noortalunike seas suurema käibega on piimakarjakasvatusega tegelejad
+
+Tööjõukulud on noortalunike seas kõrgemad piimakarjakasvatajatel, keskmisest madalamad on need aga igal tegevusalal peale mesinduse
+
+Osalenud kasutavad vara efektiivsemalt kõikides tegevusalades, eriti aga köögivilja- ja piimakarjakasvatuses
 
 # Kuidas on läinud?
 
@@ -122,25 +139,74 @@ plotAegread$müügitulu
 plotAegread$puhaskasum
 ```
 
+## Vara rentaablus
+
+``` {r varaRentaablus}
+plotAegread$vara.rentaablus
+```
+
 ## Võlakordaja
 
 ``` {r võlakordaja}
 plotAegread$võlakordaja
 ```
 
-## Vara rentaablus
+---
 
-``` {r vara.rentaablus}
-plotAegread$vara.rentaablus
-```
+Majandusaasta aruannete esitamise järgi võib oletada, et vähemalt 95% noortalunikest tegutsevad endiselt
 
-## Tööjõukulud
+Noortalunike müügitulu on kasvanud, eriti oluliselt on käive kasvanud köögi-, teravilja- ja veisekasvatuses
 
-``` {r tööjõukulud}
-plotAegread$tööjõukulud
-```
+Kasum on enamikel tegevusaladel vähe muutunud, segapõllumajanduses ja piimakarjakasvatuses aga langenud
+
+Vara kasutamise efektiivsus on aga langenud ja mitmekordne langus on aset leidnud segapõllumajanduses ning piimakarja- ja teraviljakasvatuses.
+
+Võljakordaja ei ole üldiselt muutunud, ent võlgade ja varade suhe on kaldunud enam võlgade poole köögiviljakasvatuses ja varade poole mesinduses
 
 # Milline on mõju?
 
-``` {r }
+## Müügitulu üldiselt
+
+``` {r mõjuMüügitulu}
+plotMõju$müügitulu[[1]]
 ```
+
+## Müügitulu tegevusalades
+
+``` {r mõjuMüügituluTeg}
+plotMõju$müügitulu[[2]]
+```
+
+## Vara üldiselt
+
+``` {r mõjuVara}
+plotMõju$vara[[1]]
+```
+
+## Vara tegevusalades
+
+``` {r mõjuVaraTeg}
+plotMõju$vara[[2]]
+```
+
+## Kohustused üldiselt
+
+``` {r mõjuKohustused}
+plotMõju$kohustused[[1]]
+```
+
+## Kohustused tegevusalades
+
+``` {r mõjuKohustusedTeg}
+plotMõju$kohustused[[2]]
+```
+
+---
+
+Müügitulu on investeeringu järgselt kasvanud ja kõige selgem on meetme mõju käibele veisekasvatuses
+
+Keskmise noortaluniku vara on pärast investeeringu lõpetamist kasvanud ja eriti selge on meetme panus varasse köögiviljakasvatuses ja mesinduses
+
+Kõige otsesem on meetme mõju kohustuste puhul, mis vahetult pärast investeerigu tegemist järsult kasvasid, eriti selgelt köögiviljakasvatuses
+
+# {data-background='https://c2.staticflickr.com/4/3852/14202918250_921638aab8_h.jpg'}

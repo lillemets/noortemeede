@@ -22,11 +22,12 @@ plotAsutamine <- ggplot(majAr[majAr$aasta == majAr$viimane, ]) + aes(x = asutami
   scale_x_date(name = "Ettevõtte asutamise aasta", date_breaks = "year", date_labels = "%Y") +
   scale_y_continuous(name = "Arv") + 
   facet_grid(ifelse(osalenu, 
-                    paste0("Osalenud (n=", sum(osalenu), ")"),
+                    paste0("Noortalunikud (n=", sum(osalenu), ")"),
                     paste0("Teised (n=", sum(!osalenu), ")")) ~ ., 
              scales = 'free') + 
   theme(text = element_text(family = 'Roboto Condensed', size = 12), 
-        axis.text = element_text(size = 10, angle = 45), 
+        axis.text.x = element_text(size = 10, angle = 45), 
+        axis.text.y = element_text(size = 10), 
         axis.ticks = element_blank(), 
         legend.background = element_rect(fill = NA, color = NA, size = .1),
         legend.key = element_blank(), 
@@ -50,37 +51,30 @@ vrMaj <- aggregate(majAr[, which(names(majAr) == 'müügitulu'):ncol(majAr)],
                              tegevusala = majAr$tegevusala), 
                    mean, na.rm = T)
 
-## Määra majandusnäitajatega tulbad
-majNä <- which(names(vrMaj) == 'müügitulu'):ncol(vrMaj)
-
-## Eemalda igalt näitajalt äärmuslikud väärtused
-vrMaj[, majNä] <- lapply(vrMaj[, majNä], function(x) ifelse(x %in% boxplot.stats(x)$out, NA, x))
-
 ## Loo funktsioon joonistamiseks ja joonista
 võrdleMaj <- function(x) {
   
-  # Määra x skaala puktid
-  skaala <- pretty(vrMaj[, x])
+  # Määra y skaala puktid nii, et need hõlmaks vaid keskmist 80%
+  skaala <- pretty(c(quantile(vrMaj[, x], probs = .1, na.rm = T), 
+                     quantile(vrMaj[, x], probs = .9, na.rm = T)))
   
-  # Määra valimid
-  arvOsalenud <- length(vrMaj$kood[vrMaj$osalenu & !is.na(vrMaj[, x])])
+  # Salvesta valimite suurus
+  arvNoortalunikud <- length(vrMaj$kood[vrMaj$osalenu & !is.na(vrMaj[, x])])
   arvTeised <- length(vrMaj$kood[!(vrMaj$osalenu) & !is.na(vrMaj[, x])])
-  
+
   # Joonista
   ggplot(vrMaj) + aes_string(x = 'tegevusala', y = x, color = 'tegevusala') +
-    geom_jitter(width = .4, alpha = .3) + 
-    geom_boxplot(width = .2, alpha = .6, outlier.colour = NA) + 
-    labs(#title = paste("Meetmes 1.2 osalenud ja teiste põllumajandusettevõtete", 
-         #              sub("\\.", " ", x), 
-         #              "(2007 - 2015 keskmine)"), 
-         caption = "Allikas: Äriregister") + 
+    geom_jitter(width = .4, alpha = .2) + 
+    geom_boxplot(width = .4, alpha = 0, outlier.colour = NA) + 
+    coord_cartesian(ylim = c(min(skaala), max(skaala))) + 
+    labs(caption = "Allikas: Äriregister") + 
     scale_color_brewer(name = "Tegevusala", palette = 'Set1') + 
     scale_x_discrete(labels = NULL, name = NULL) + 
     scale_y_continuous(breaks = skaala, 
                        labels = format(skaala, big.mark = " ", scientific = F), 
                        name = Proper(sub("\\.", " ", x))) + 
     facet_grid(. ~ ifelse(osalenu, 
-                      paste0("Osalenud (n=", arvOsalenud, ")"),
+                      paste0("Noortalunikud (n=", arvNoortalunikud, ")"),
                       paste0("Teised (n=", arvTeised, ")"))) + 
     theme(text = element_text(family = 'Roboto Condensed', size = 12), 
           axis.text = element_text(size = 10), 
@@ -98,8 +92,8 @@ võrdleMaj <- function(x) {
           strip.background = element_blank(), 
           strip.text = element_text(size = 12))
 }
-plotMaj <- lapply(names(vrMaj)[majNä], võrdleMaj)
-names(plotMaj) <- names(vrMaj)[majNä]
+plotMaj <- lapply(names(vrMaj)[which(names(vrMaj) == 'müügitulu'):ncol(vrMaj)], võrdleMaj)
+names(plotMaj) <- names(vrMaj)[which(names(vrMaj) == 'müügitulu'):ncol(vrMaj)]
 
 
 # Tegevusalade võrdlus ----------
@@ -119,12 +113,13 @@ skaala <- seq(0, round(max(vrTeg[,1:2]), digits = 1), .05)
 ## Jäta alles tegevusalade nimetused vaid siis, kui osakaaludes on erinevus
 vrTeg$tegevusala <- ifelse(abs(vrTeg$teised - vrTeg$osalenud) > .02, vrTeg$tegevusala, NA)
 
-## Loo funktsioon joonistamiseks ja joonista
+## Joonista
 plotTeg <- ggplot(vrTeg) + aes(x = teised, y = osalenud) + 
-  geom_abline(intercept = 0, slope = 1, color = 'gray80') + 
+  geom_abline(intercept = 0, slope = 1, color = 'red') + 
   geom_point(size = 2) + 
   geom_text(aes(label = tegevusala), hjust = .02, vjust = -.4, 
             family = 'Roboto Condensed', alpha = .6) + 
+  expand_limits(x = 0, y = 0) + 
   labs(caption = "Allikas: Äriregister") + 
   scale_x_continuous(breaks = skaala, 
                      labels = Perc(skaala), 
@@ -132,7 +127,7 @@ plotTeg <- ggplot(vrTeg) + aes(x = teised, y = osalenud) +
                                    length(unique(majAr$kood[!(majAr$osalenu)])), ")")) + 
   scale_y_continuous(breaks = skaala, 
                      labels = Perc(skaala), 
-                     name = paste0("Osalenud (n=", 
+                     name = paste0("Noortalunikud (n=", 
                                    length(unique(majAr$kood[majAr$osalenu])), ")")) + 
   theme(text = element_text(family = 'Roboto Condensed', size = 12), 
         axis.text = element_text(size = 10), 

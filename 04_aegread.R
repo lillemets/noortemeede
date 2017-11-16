@@ -16,18 +16,18 @@ majAr <- readRDS('majandusaasta_aruanded.Rds')
 
 majAr %>% filter(osalenu == 1) %>% dplyr::select(kood, aasta, asutamine, viimane) %>% 
   group_by(kood) %>% 
-  mutate(viimane = as.Date(paste0(max(aasta), '0701'), '%Y%m%d')) %>% 
+  mutate(viimane = as.Date(paste0(max(aasta) + 1, '0701'), '%Y%m%d')) %>% 
   dplyr::select(-aasta) %>% distinct %>% 
   arrange(asutamine) %>% ungroup %>% mutate(rida = group_indices(., kood)) %>% 
   gather(key = 'näitaja', value = 'väärtus', 2:3) %>% 
   mutate(näitaja = ifelse(näitaja == 'asutamine', 
                           "Ettevõtte asutamise aeg", 
-                          "Viimase majandusaasta aruande esitamise aeg")) %>% 
+                          "Viimase majandusaasta aruande aeg")) %>% 
 ggplot() + aes(x = väärtus, y = rida, color = näitaja) + 
   geom_point() + 
   scale_color_discrete(name = NULL) + 
   scale_x_date(name = NULL, date_breaks = 'year', date_labels = '%Y') + 
-  scale_y_continuous(name = "Osalenud ettevõtted", labels = NULL) + 
+  scale_y_continuous(name = "Noortalunikud", labels = NULL) + 
   theme(text = element_text(family = 'Roboto Condensed', size = 12), 
         axis.text = element_text(size = 10, angle = 45), 
         axis.ticks = element_blank(), 
@@ -73,24 +73,19 @@ teeAegrida <- function(x) {
   ## Joonista vaid siis, kui tabel tühi ei ole
   if (nrow(andmed) > 0) {
   
-  ## Kohanda osalenu näitaja väärtusi
-  andmed$osalenu <- ifelse(andmed$osalenu, 
-                           paste0("Osalenud (n=", 
-                                  length(unique(andmed$kood[andmed$osalenu & 
-                                                              !is.na(andmed[, x])])), 
-                                         ")"),
-                           paste0("Teised (n=", 
-                                  length(unique(andmed$kood[!(andmed$osalenu) & 
-                                                              !is.na(andmed[, x])])), 
-                                  ")"))
+  # Muuda tegevusala nii, et see kajastaks osalenute arvu valimis
+  sagedus <- as.data.frame(table(andmed$tegevusala[!duplicated(andmed$kood) & andmed$osalenu]))
+  andmed$tegevusala <- paste0(andmed$tegevusala, 
+                              " (n=", sagedus$Freq[match(andmed$tegevusala, sagedus$Var1)], ")")
+  
+  ## Kohanda osalenu näitaja väärtuseid
+  andmed$osalenu <- ifelse(andmed$osalenu, "Noortalunikud", "Teised")
   
   ## Joonista
   ggplot(andmed) + aes_string(x = 'aasta', y = x, color = 'osalenu') +
     expand_limits(y = 0) + 
     geom_line(stat = 'summary', fun.y = 'median', size = 1.2) + 
-    labs(#title = paste("Meetmes 1.2 osalenud ja teiste põllumajandusettevõtete", 
-         #              sub("\\.", " ", x)), 
-         caption = "Allikas: Äriregister") + 
+    labs(caption = "Allikas: Äriregister") + 
     scale_color_brewer(name = NULL, palette = 'Set2') + 
     scale_x_continuous(breaks = min(andmed$aasta):max(andmed$aasta), 
                        name = NULL) + 
