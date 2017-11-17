@@ -1,6 +1,6 @@
 ---
-title: <b>Põllumajandusliku tegevusega alustava noore ettevõtja toetus</b>
-author: Jüri Lillemets <br>Eesti Maaülikool
+title: <b>Põllumajandusliku tegevusega alustava noore ettevõtja toetuse mõju</b>
+#author: Jüri Lillemets <br>Eesti Maaülikool
 date: 21. november 2017
 output: 
   revealjs::revealjs_presentation:
@@ -33,7 +33,7 @@ Meede "Noorte põllumajandustootjate tegevuse alustamine"
 - Eesti maaelu arengukava 2007-2013 meede 1.2
 - Eesti maaelu arengukava 2014-2020 meede 6.1
 
-_Toetuse saajad... Põllumajandustootmisega **alustavad/tegelevad** füüsilisest isikust ettevõtjad ja füüsilisest isikust osanikega osaühingud. Taotleja võib **üle võtta** ka tegutseva põllumajandusettevõtte_
+_Toetuse saajad... Põllumajandustootmisega **alustavad/tegelevad** füüsilisest isikust ettevõtjad ja füüsilisest isikust osanikega osaühingud. Taotleja võib **üle võtta** ka tegutseva põllumajandusettevõtte._
 
 _Miinimumnõuded... Füüsilisest isikust ettevõtja või osaühingu kõik osanikud on taotlemise hetkel **nooremad kui 40 aastat**_
 
