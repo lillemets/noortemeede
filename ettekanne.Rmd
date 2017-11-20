@@ -1,6 +1,6 @@
 ---
 title: <b>Põllumajandusliku tegevusega alustava noore ettevõtja toetuse mõju</b>
-#author: Jüri Lillemets <br>Eesti Maaülikool
+author: Jüri Lillemets <br>Eesti Maaülikool
 date: 21. november 2017
 output: 
   revealjs::revealjs_presentation:
@@ -39,7 +39,7 @@ _Miinimumnõuded... Füüsilisest isikust ettevõtja või osaühingu kõik osani
 
 ---
 
-Ühekordne toetus kuni 40 000 eurot.
+Ühekordne toetus kuni 40 000 eurot
 
 _Nõutav müügitulu põllumajanduslikust tegevusest taotlemisele järgneva kalendriaasta lõpuks on **vähemalt 2400 eurot**_
 
@@ -153,15 +153,15 @@ plotAegread$võlakordaja
 
 ---
 
-Majandusaasta aruannete esitamise järgi võib oletada, et vähemalt 95% noortalunikest tegutsevad endiselt
+Majandusaasta aruannete esitamise järgi võib oletada, et tegevuse lõpetanute osakaal jääb alla 5%
 
-Noortalunike müügitulu on kasvanud, eriti oluliselt on käive kasvanud köögi-, teravilja- ja veisekasvatuses
+Noortalunike müügitulu on kasvanud, eriti oluliselt on käive kasvanud mesinduses, aga ka köögi-, teravilja- ja veisekasvatuses
 
-Kasum on enamikel tegevusaladel vähe muutunud, segapõllumajanduses ja piimakarjakasvatuses aga langenud
+Kasum on enamikel tegevusaladel langenud, eriti piimakarja- ja teraviljakasvatuses ning segapõllumajanduses, kasvanud aga mesinduses
 
-Vara kasutamise efektiivsus on aga langenud ja mitmekordne langus on aset leidnud segapõllumajanduses ning piimakarja- ja teraviljakasvatuses.
+Vara kasutamise efektiivsus on aga langenud ja mitmekordne langus on aset leidnud segapõllumajanduses ning piimakarja- ja teraviljakasvatuses
 
-Võljakordaja ei ole üldiselt muutunud, ent võlgade ja varade suhe on kaldunud enam võlgade poole köögiviljakasvatuses ja varade poole mesinduses
+Võlakordaja ei ole üldiselt muutunud, ent võlgade ja varade suhe on kaldunud enam varade poole mesinduses
 
 # Milline on mõju?
 

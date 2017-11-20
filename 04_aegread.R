@@ -17,6 +17,7 @@ majAr <- readRDS('majandusaasta_aruanded.Rds')
 majAr %>% filter(osalenu == 1) %>% dplyr::select(kood, aasta, asutamine, viimane) %>% 
   group_by(kood) %>% 
   mutate(viimane = as.Date(paste0(max(aasta) + 1, '0701'), '%Y%m%d')) %>% 
+  filter(viimane <= as.Date('20170701', '%Y%m%d')) %>% 
   dplyr::select(-aasta) %>% distinct %>% 
   arrange(asutamine) %>% ungroup %>% mutate(rida = group_indices(., kood)) %>% 
   gather(key = 'näitaja', value = 'väärtus', 2:3) %>% 
@@ -68,7 +69,7 @@ extTs <- function(andmed, näitaja, aastad) {
 teeAegrida <- function(x) {
   
   ## Tekita sobiv aegrida
-  andmed <- extTs(majAr, x, 2010:2016)
+  andmed <- extTs(majAr, x, 2012:2016)
   
   ## Joonista vaid siis, kui tabel tühi ei ole
   if (nrow(andmed) > 0) {

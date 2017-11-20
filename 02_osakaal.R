@@ -2,7 +2,7 @@
 setwd('/home/jrl/work/noortemeede')
 
 # Laadi paketid
-library('ggplot2');library('extrafont');library('raster');library('mapproj')
+library('ggplot2');library('extrafont');library('raster');library('mapproj');library('rsdmx')
 
 # Laadi objektid
 load('/home/jrl/data/objects/funs.Rda')
@@ -38,6 +38,24 @@ kaartTabel$noored <- cut(vanus$noored[match(kaartTabel$SOVEREIGNT, vanus$geo)],
 kaartTabel$muutus <- cut(vanus$muutus[match(kaartTabel$SOVEREIGNT, vanus$geo)],
                          breaks = seq(-.06, .06, .03),
                          labels = c('-6% - -3%', '... - 0%', '... - +3%', '... - +6%'))
+
+## Andmed Statistikaametist Eesti kohta
+pms204 <- setDSD(readSDMX('http://andmebaas.stat.ee/restsdmx/sdmx.ashx/GetData/PMS204/1+2.1+2+3.1+2+3.1+2+3+4+5+6+7+8+9/all?startTime=2003&endTime=2016'),
+                 readSDMX('http://andmebaas.stat.ee/restsdmx/sdmx.ashx/GetDataStructure/PMS204'))
+pms204 <- as.data.frame(pms204, labels = T)
+pms204 <- pms204[, c(names(pms204)[grep('label.et', names(pms204))], 'obsTime', 'obsValue')]
+
+## Kohanda andmeid
+pms204 <- pms204[pms204[, 1] == "Hõivatute arv" & 
+                   pms204[, 2] == "Kokku" & 
+                   pms204[, 3] == "Mehed ja naised" & 
+                   pms204[, 4] != "Vanuserühmad kokku" & 
+                   pms204[, 4] != "35-39" & pms204[, 4] != "40-44" , 
+                 4:6]
+names(pms204) <- c('age', 'time', 'value')
+pms204$time <- as.numeric(pms204$time)
+pms204$age <- factor(pms204$age, 
+                     levels = rev(c('Alla 25', '25-34', '35-44', '45-54', '55-64', '65 ja vanemad')))
 
 
 # Joonista kaardid ----------
@@ -87,21 +105,16 @@ plotMuutus <- baseplot +
   
 # Muutus Eestis ----------
 
-## Kohanda vanuse kategooriaid
-vanusEst$age <- factor(rev(vanusEst$age), 
-                       levels = unique(vanusEst$age), 
-                       labels = rev(c('< 25', '25 - 34', '35 - 44', '45 - 54', '55 - 64', '> 64')))
-
 ## Joonista
 plotVanused <- 
-ggplot(vanusEst) + aes(x = time, y = value, fill = age) + 
+ggplot(pms204) + aes(x = time, y = value, fill = age) + 
   geom_area(position = 'stack', alpha = .8) + 
   labs(#title = "Eesti põllumajandusettevõtete juhtide vanuseline jaotus", 
-       caption = "Allikas: Eurostat") + 
+       caption = "Allikas: Eesti Statistikaamet") + 
   scale_fill_brewer(palette = 'RdYlGn', name = "Vanuse-\ngrupp") + 
-  scale_x_continuous(breaks = unique(vanusEst$time), name = NULL) + 
-  scale_y_continuous(breaks = seq(0, 2.5e4, 5e3), 
-                     labels = Numb(seq(0, 2.5e4, 5e3)), 
+  scale_x_continuous(breaks = unique(pms204$time), name = NULL) + 
+  scale_y_continuous(breaks = seq(0, 4e4, 5e3), 
+                     labels = Numb(seq(0, 4e4, 5e3)), 
                      name = "Arv") + 
   theme(text = element_text(family = 'Roboto Condensed', size = 12), 
         axis.text = element_text(size = 10), 
