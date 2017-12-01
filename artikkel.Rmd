@@ -1,41 +1,192 @@
 ---
-title: "Noorte meede"
+title: "Noortalunike meetmes osalenud ettevõtete kasv sõltub tegevusalast"
 author: "Jüri Lillemets"
-date: "November 20, 2017"
-output: html_document
+date: "1. detsember 2017"
+output:
+  html_document:
+    fig_caption: yes
+    smart: no
+    theme: cosmo
+  word_document: 
+    fig_caption: yes
 ---
 
-```{r setup, include = FALSE, eval = TRUE}
-# Määra seaded
-knitr::opts_chunk$set(include = T, eval = T, echo = F, message = F, warning = F, 
-                      fig.asp = .5, fig.width = 10)
-# Määra töökaust
-knitr::opts_knit$set(root.dir = '/home/jrl')
-# Lae pakid ja objektid
-library('rsdmx');library('forecast')
-load('data/objects/ggplot_themes.Rda')
+``` {r setup, include = F}
+# Seaded
+knitr::opts_chunk$set(include = T, eval = T, echo = F, message = F, warning = F, fig.width = 8)
+
+# Töökaust
+knitr::opts_knit$set(root.dir = '/home/jrl/work/noortemeede') 
+
+# Laadi pakid
+library('ggplot2')
+
+# Laadi objektid
+load('/home/jrl/data/objects/funs.Rda')
+load('/home/jrl/data/objects/ggplot_themes.Rda')
 ```
 
-``` {r} 
-## Andmed Statistikaametist Eesti kohta
-vanused <- setDSD(readSDMX('http://andmebaas.stat.ee/restsdmx/sdmx.ashx/GetData/PMS204/1+2.1+2+3.1+2+3.1+2+3+4+5+6+7+8+9/all?startTime=2003&endTime=2016'),
-                 readSDMX('http://andmebaas.stat.ee/restsdmx/sdmx.ashx/GetDataStructure/PMS204'))
-vanused <- as.data.frame(vanused, labels = T)
-vanused <- vanused[, c(names(vanused)[grep('label.et', names(vanused))], 'obsTime', 'obsValue')]
+``` {r captions}
+# Loo jooniste pealkirjad ja nimed
+figName <- c("Müügitulu absoluutne muutus esimesel kolmel tegutsemise aastal.", 
+             "Noortalunike müügitulu suhteline muutus esimesel kolmel tegutsemise  aastal.", 
+             "Noortalunike müügitulu muutus investeeringu tegemise suhtes.")
+figId <- c('mt.aeg', 'mt.aeg.suht', 'mt.inv')
+
+# Loo funktsioon jooniste pealkirjastamiseks ja neile viitamiseks
+fig <- function(id, out = 'num') {
+  num <- which(figId == substitute(id))
+  if (length(num) > 0) {
+    if (out == 'num') {
+      return(num)
+    } else if (out == 'cap') {
+      return(paste0("Joonis ", num, ". ", figName[num]))
+    } else {
+      stop("Output type is missing or invalid.")
+    }
+  } else {
+    stop("ID is missing or invalid.")
+  }
+}
+```
+
+Noortalunike meetme[^1] rakendamist alustati juba 2008. aastal, mil toimus esimene taotlusvoor. Meetme abil on toetatud noori põllumajandustootjaid seega varsti juba 10 aastat. Kuigi MAK 2007-2013 programmiperiood on lõppenud, maksti meetme 1.2 toetusi välja veel üle-eelmisel aastal. Võttes arvesse ka asjaolu, et investeeringute mõju ettevõtetele avaldub alles pikema perioodi jooksul, on nüüd sobilik aeg hinnata, kuidas on toetatud noortalunikel[^2] läinud. Järgnevalt vaadeldaksegi, kuidas on muutunud erievate tegevusalade ja aastate lõikes noortalunike käive, mis annab hea ülevaate ettevõtete kasvust.
+
+[^1]: Eesti Maaelu Arengukava (MAK) 2007-2013 meede 1.2 "Põllumajandusliku tegevusega alustava noore ettevõtja toetus". Meetme rakendamine jätkub kehtiva MAK raames sama nimetuse all.
+[^2]: Siin ja edaspidi MAK 2007-2013 meetmes 1.2 osalenud ettevõtjad.
+
+``` {r data}
+# Sisesta andmed
+majAr <- readRDS('majandusaasta_aruanded.Rds')
+
+# Arvuta tegutsemise aasta
+majAr$aeg <- majAr$aasta - as.numeric(substr(majAr$asutamine, 1, 4))
+
+# Arvuta aastad investeeringu tegemise aasta suhtes
+majAr$inv.aeg <- majAr$aasta - as.numeric(substr(majAr$makse, 1, 4))
+
+# Sisesta meetmes 1.2 osalenud ja alustajad
+kogemus <- readRDS('kogemus.Rds')
+majAr$osalenu <- majAr$kood %in% kogemus$kood[kogemus$toetatud]
+majAr$alustaja <- majAr$kood %in% kogemus$kood[kogemus$kogemus == 'alustaja']
+```
+
+# Noortalunike müügitulu on kasvanud teistest tootjatest aeglasemalt
+
+Kõrvutades noortalunike müügitulu teiste inveteeringutoetusi saanud ettevõtjate müügituluga, paistab esmalt silma noortalunike käibe aeglasem kasv esimesel kolmel tegutsemisaastal (joonis `r fig('mt.aeg')`[^3]). 
+
+[^3]: Joonistel on kujutatud ettevõtjate jaotust karpdiagrammina, millel horisontaaljoon tähistab mediaani ehk keskmist ettevõtet, kastis paikneb keskmine 50% ettevõtjatest ja sellest välja ulatuvad jooned katavad ülejäänud ettevõtted.
+
+``` {r mt.aeg, fig.cap = fig(mt.aeg, 'cap')}
+## Loo andmestik
+mtDF <- extTs(majAr, 'kood', 'müügitulu', 'aeg', 1:3)
+
+## Määra y-skaala puktid
+skaala <- seq(0, quantile(mtDF$müügitulu, probs = .9, na.rm = T), 2e4)
+
+## Eemalda muu tegevusala
+mtDF <- mtDF[mtDF$tegevusala != 'Muu tegevusala', ]
+mtDF <- droplevels(mtDF)
+
+## Muuda tegevusala nii, et see kajastaks valimi surust
+mtDF$tegevusala <- addSize(mtDF, 'kood', 'tegevusala')
 
 
-ars <- vanused[vanused[, 1] == "Hõivatute arv" & 
-                     vanused[, 2] == "Kokku" & 
-                     vanused[, 4] != "35-39" & 
-                     vanused[, 4] != "40-44", 
-                   -1]
-ars <- reshape(ars, timevar = 'obsTime', idvar = c('DIM3_label.et', 'DIM4_label.et', 'DIM5_label.et'), direction = 'wide')
-nimed <- apply(ars[, 1:3], 1, paste, collapse = ' ')
-nimed <- gsub(' ', '.', nimed)
-ars <- data.frame(t(ars[, 4:9]))
-names(ars) <- nimed
-#ars <- ars[, !(grepl('kokku', names(ars)))]
+## Joonista
+ggplot(mtDF) + 
+  aes(x = as.factor(aeg), y = müügitulu, color = factor(osalenu, levels = c(T, F))) + 
+  geom_boxplot(width = .4, alpha = 0, outlier.colour = NA, position = position_dodge(.6)) + 
+  coord_cartesian(ylim = c(min(skaala), max(skaala))) + 
+  labs(#title = "Müügitulu absoluutne muutus esimesel kolmel tegutsemise aastal", 
+       caption = "Allikas: Äriregister", color = NULL) + 
+  scale_x_discrete(labels = as.roman(1:3), name = "Tegutsemise aasta") + 
+  scale_y_continuous(breaks = skaala, labels = Numb(skaala / 1e3), 
+                     name = "Müügitulu, tuhat eurot") + 
+  scale_color_manual(labels = c("Meetmes 1.2 osalenud ettevõtjad", 
+                                "Teised investeeringutoetusi saanud ettevõtjad"), 
+                     values = c('red', 'black')) + 
+  facet_wrap(~tegevusala) + 
+  theme_white() + theme(legend.position = 'top')
+```
 
-rbind(ars, sapply(ars, function(x) forecast(x)$mean))
+# Noortalunike müügitulu kasv oli aeglaseim veisekasvatajatel
 
+Kuigi noortalunike müügitulu kasvas mediaani alusel kõikidel tegevusaladel, võib joonis `r fig('mt.aeg.suht')` alusel öelda, et kasvu kiirus ja muster sõltus tegevusalast.
+
+Keskmise noortaluniku müügitulu kasvumustri alusel võib tegeusalad jagada kolmeks. Teraviljakasvatuses ja sellega osalt seotud segapõllumajanduses kasvas müügitulu lineaarselt. Väiksema käibega tegevuste puhul nagu köögiviljakasvatus ja mesindus kasvas müügtulu alles kolmandal aastal. Vastupidi oli (piima)veisekasvatuses, mille puhul kasvas müügitulu küll teisel, aga mitte oluliselt enam kolmandal aastal.
+
+``` {r mt.aeg.suht, fig.cap = fig(mt.aeg.suht, 'cap')}
+## Loo andmestik
+mtDF <- extTs(majAr, 'kood', 'müügitulu', 'aeg', 1:3)
+
+## Jäta alles vaid osalenud
+mtDF <- mtDF[mtDF$osalenu, ]
+
+## Eemalda muu tegevusala
+mtDF <- mtDF[mtDF$tegevusala != 'Muu tegevusala', ]
+mtDF <- droplevels(mtDF)
+
+## Muuda müügitulu nii, et see näitaks muutust võrreldes 1. aasta väärtusega
+mtDF$müügitulu <- unlist(tapply(mtDF$müügitulu, mtDF$kood, function(x) (x / head(x, 1)) - 1))
+mtDF <- mtDF[!is.na(mtDF$müügitulu), ] # Eemalda puuduvad
+mtDF <- mtDF[!is.infinite(mtDF$müügitulu), ] # Eemalda lõputud
+
+## Muuda tegevusala nii, et see kajastaks valimi surust
+mtDF$tegevusala <- addSize(mtDF, 'kood', 'tegevusala')
+
+## Loo andmestik mediaani koordinaatide ja tegevusalade nimetustega
+lõpp <- data.frame(x = rep(max(mtDF$aeg), length(levels(mtDF$tegevusala))), 
+                   y = sapply(paste(levels(mtDF$tegevusala)), 
+                              function(x) median(
+                                mtDF[mtDF$aeg == max(mtDF$aeg) & mtDF$tegevusala == x, 
+                                     'müügitulu']), USE.NAMES = F), 
+                   label = levels(mtDF$tegevusala))
+
+## Joonista
+ggplot(mtDF) + 
+  aes(x = as.factor(aeg), y = müügitulu, group = tegevusala) + 
+  geom_line(stat = 'summary', fun.y = 'median', size = .6) + 
+  geom_text(data = lõpp, aes(x = x, y = y, label = label, group = NA), 
+            hjust = 0, family = 'Roboto Condensed') + 
+  coord_cartesian(xlim = c(1.5, 3)) + 
+  labs(#title = "Noortalunike müügitulu suhteline muutus esimesel kolmel tegutsemise  aastal", 
+       caption = "Allikas: Äriregister") + 
+  scale_x_discrete(labels = as.roman(1:5), name = "Tegutsemise aasta") + 
+  scale_y_continuous(breaks = seq(0, 1.2, .1), labels = Perc, 
+                     name = "Müügitulu võrreldes I tegutsemise aastaga (mediaan)") + 
+  theme_white() + theme(legend.position = 'none')
+```
+
+# Erinevused müügitulus süvenesid pärast investeeringute tegemist
+
+Meetme raames tehtud investeeringute mõju käibele aitab teatud määral hinnata joonisel `r fig(mt.inv)` kujutatud müügitulu muutus investeeringu tegemise aasta suhtes. Kuna välja toodud vahemik on küllaltki lai, on joonisel hinnatud vaid aastatel 2010-11 toetatud noortalunikke. Investeeringu tegemise aastaks loeti sealjuures aastat, mil tootjale maksti toetus välja. 
+ 
+Investeeringu tegemise järgselt on noortalunike müügiulu kasvanud küllaltki stabiilselt.
+
+Teatud kõrvalekalle joonisel `r fig(mt.inv)` ilmneb 5. aastal, kui kõikide kujutatud ettevõtjate müügitulu kasvas üsna järsku üle 20 tuhande piiri. Seda saab seletada meetme nõudega, mille kohaselt peab toetuse saamisele järgneva viienda kalendriaasta lõpuks taotleja aastamüügitulu põllumajanduslikust tegevusest moodustama vähemalt 80% saadud toetuse summast. Võib oletada, et selle tähtaja lähenedes on madalama käibega tootjad teinud lisapingutusi, et enda müügitulu vastavale tasemele tõsta. Või siis vähemalt esitanud enda müügitulu märkimisväärselt kõrgemana kui eelneval aastal aastal. 
+
+``` {r mt.inv, fig.cap = fig(mt.inv, 'cap')}
+## Loo andmestik
+mtDF <- extTs(majAr, 'kood', 'müügitulu', 'inv.aeg', -1:5)
+
+## Jäta alles vaid osalenud
+mtDF <- mtDF[mtDF$osalenu, ]
+
+## Määra y-skaala puktid
+skaala <- seq(0, quantile(mtDF$müügitulu, probs = .9, na.rm = T), 2e4)
+
+## Joonista
+ggplot(mtDF) + 
+  aes(x = factor(inv.aeg), y = müügitulu) + 
+  geom_jitter(aes(color = alustaja), width = .15, alpha = .3) +
+  geom_boxplot(width = .4, alpha = 0, outlier.colour = NA) + 
+  coord_cartesian(ylim = c(min(skaala), max(skaala))) + 
+  labs(#title = "Noortalunike müügitulu muutus investeeringu tegemise suhtes", 
+       caption = "Allikas: Äriregister", color = NULL) + 
+  scale_x_discrete(labels = c(-1, 0, paste0('+', 1:5)), 
+                   name = "Aasta investeeringu tegemise aasta suhtes") + 
+  scale_y_continuous(breaks = skaala, labels = Numb(skaala / 1e3), 
+                     name = "Müügitulu, tuhat eurot") + 
+  scale_color_manual(labels = c("Ülevõtja või jätkaja", "Alustaja"), values = c('black', 'red')) +
+  theme_white() + theme(legend.position = 'top')
 ```

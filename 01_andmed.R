@@ -67,6 +67,12 @@ majAr$tegevusala <- ifelse(majAr$tegevusala == "Seakasvatus" |
                              majAr$tegevusala == "Taimekasvatuse abi", 
                            "Muu tegevusala", majAr$tegevusala)
 
+## Järjesta tegevusalad
+majAr$tegevusala <- factor(majAr$tegevusala, 
+                           levels = c('Piimakarjakasvatus', 'Teraviljakasvatus', 
+                                      'Segapõllumajandus', 'Veisekasvatus', 'Köögiviljakasvatus', 
+                                      'Mesindus', 'Muu tegevusala'))
+
 
 # Arvuta näitajate väärtused ----------
 
