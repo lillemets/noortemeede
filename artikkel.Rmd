@@ -1,7 +1,7 @@
 ---
 title: "Noortalunike meetmes osalenud ettevõtete kasv sõltub tegevusalast"
 author: "Jüri Lillemets"
-date: "1. detsember 2017"
+date: "6. detsember 2017"
 output:
   html_document:
     fig_caption: yes
@@ -50,10 +50,10 @@ fig <- function(id, out = 'num') {
 }
 ```
 
-Noortalunike meetme[^1] rakendamist alustati juba 2008. aastal, mil toimus esimene taotlusvoor. Meetme abil on toetatud noori põllumajandustootjaid seega varsti juba 10 aastat. Kuigi MAK 2007-2013 programmiperiood on lõppenud, maksti meetme 1.2 toetusi välja veel üle-eelmisel aastal. Võttes arvesse ka asjaolu, et investeeringute mõju ettevõtetele avaldub alles pikema perioodi jooksul, on nüüd sobilik aeg hinnata, kuidas on toetatud noortalunikel[^2] läinud. Järgnevalt vaadeldaksegi, kuidas on muutunud erievate tegevusalade ja aastate lõikes noortalunike käive, mis annab hea ülevaate ettevõtete kasvust.
+Noortalunike meetme[^1] rakendamist alustati juba 2008. aastal, mil toimus esimene taotlusvoor. Meetme abil on toetatud noori põllumajandustootjaid seega varsti juba 10 aastat. Kuigi MAK 2007-2013 programmiperiood on lõppenud, maksti meetme 1.2 toetusi välja veel 2015. aastal. Võttes arvesse ka asjaolu, et investeeringute mõju ettevõtetele avaldub alles pikema perioodi jooksul, on nüüd sobilik aeg hinnata, kuidas on toetatud noortalunikel[^2] läinud. Järgnevalt kirjeldataksegi, kuidas muutus erinevate tegevusalade ja aastate lõikes noortalunike müügitulu (siin ka käive), mis iseloomustab hästi ettevõtete kasvu.
 
 [^1]: Eesti Maaelu Arengukava (MAK) 2007-2013 meede 1.2 "Põllumajandusliku tegevusega alustava noore ettevõtja toetus". Meetme rakendamine jätkub kehtiva MAK raames sama nimetuse all.
-[^2]: Siin ja edaspidi MAK 2007-2013 meetmes 1.2 osalenud ettevõtjad.
+[^2]: Siin ja edaspidi MAK 2007-2013 meetme 1.2 raames toetatud ettevõtted.
 
 ``` {r data}
 # Sisesta andmed
@@ -71,15 +71,20 @@ majAr$osalenu <- majAr$kood %in% kogemus$kood[kogemus$toetatud]
 majAr$alustaja <- majAr$kood %in% kogemus$kood[kogemus$kogemus == 'alustaja']
 ```
 
-# Noortalunike müügitulu on kasvanud teistest tootjatest aeglasemalt
+# Noortalunike müügitulu kasvas teistest tootjatest erinevalt
 
-Kõrvutades noortalunike müügitulu teiste inveteeringutoetusi saanud ettevõtjate müügituluga, paistab esmalt silma noortalunike käibe aeglasem kasv esimesel kolmel tegutsemisaastal (joonis `r fig('mt.aeg')`[^3]). 
+Joonisel `r fig('mt.aeg')`[^3] on kujutatud alates 2008. aastast loodud ettevõtete müügitulu jaotust esimesel kolmel tegevusaastal. Muuhulgas ilmneb käibe märkimisväärne erinevus tegevuslade lõikes. Kui piimakarjakasvatuses algas juba esimesel tegevusaastal keskmise tootja käive 60 tuhandest eurost, siis enamikel joonisel `r fig('mt.aeg')` esitatud tegevusalade puhul jäi müügitulu mediaan kuni kolmanda tegevusaastani 20 tuhande euro piiresse. Eriti väikese ulatusega majandustegevusega paistis silma noortalunike seas populaarne mesindus, mille puhul kogu esitatud perioodi jooksul kasvas vähestel tootjatel müügitulu üle 20 tuhande euro. Seega sõltub ettevõtte müügitegevuse maht selle tegevusalast juba esimestest tegutsemise aastatest alates.
 
-[^3]: Joonistel on kujutatud ettevõtjate jaotust karpdiagrammina, millel horisontaaljoon tähistab mediaani ehk keskmist ettevõtet, kastis paikneb keskmine 50% ettevõtjatest ja sellest välja ulatuvad jooned katavad ülejäänud ettevõtted.
+Müügitulu kasv oli noortalunikel teiste tootjatega võrreldes tegevusalati mõnevõrra erinev (joonis `r fig('mt.aeg')`). Vaid piimakarjakasvatuses alustasid noortalunikud teistest tootjatest selgelt kõrgema müügituluga ja müügitulu mediaan oli noortalunikel esimesel tegevusaastal teistest kõrgem ka köögiviljakasvatuses. Teiste tootjate müügitulu tasemele järgi jõudmises olid noortalunikud kõige edukamad segapõllumajanduses ja mesinduses. Mesinduse puhul tõusis noortalunike käive eriti märkimisväärselt kolmandal tegutsemise aastal. Siiski oli tegevusalasid arvestamata kõikide tegevusaastate puhul noortalunike müügitulu keskmiselt madalam ja vähemalt esimesel tegevusaastal oli see erinevus ka statistiliselt oluline. Võib oletada, et erinevalt teistest ettevõtjatest puudus noortalunikel põllumajandustootmisega alustades varasem ettevõtlustegevus ja kapital, mistõttu on ka nende käibed esialgu madalamad ja kasv seeõttu aeglasem.
+
+[^3]: Joonistel `r fig('mt.aeg')` ja `r fig('mt.inv')` on kujutatud ettevõtjate jaotust karpdiagrammina, millel horisontaaljoon tähistab mediaani ehk keskmist ettevõtet, kastis paikneb keskmine 50% ettevõtjatest ja sellest välja ulatuvad vertikaaljooned katavad ülejäänud (va äärmusliku müügituluga) ettevõtted.
 
 ``` {r mt.aeg, fig.cap = fig(mt.aeg, 'cap')}
 ## Loo andmestik
 mtDF <- extTs(majAr, 'kood', 'müügitulu', 'aeg', 1:3)
+
+## Testi noortalunike ja teiste müügitulu erinevuse olulisust
+#lapply(1:3, function(x) wilcox.test(müügitulu ~ osalenu, data = mtDF[mtDF$aeg == x, ]))
 
 ## Määra y-skaala puktid
 skaala <- seq(0, quantile(mtDF$müügitulu, probs = .9, na.rm = T), 2e4)
@@ -88,32 +93,31 @@ skaala <- seq(0, quantile(mtDF$müügitulu, probs = .9, na.rm = T), 2e4)
 mtDF <- mtDF[mtDF$tegevusala != 'Muu tegevusala', ]
 mtDF <- droplevels(mtDF)
 
-## Muuda tegevusala nii, et see kajastaks valimi surust
+## Muuda tegevusala ja osalenmist nii, et väärtused kajastaks valimi surust
 mtDF$tegevusala <- addSize(mtDF, 'kood', 'tegevusala')
-
+mtDF$osalenu <- ifelse(mtDF$osalenu, 'Noortalunikud', 'Teised')
+mtDF$osalenu <- addSize(mtDF, 'kood', 'osalenu')
 
 ## Joonista
 ggplot(mtDF) + 
-  aes(x = as.factor(aeg), y = müügitulu, color = factor(osalenu, levels = c(T, F))) + 
+  aes(x = as.factor(aeg), y = müügitulu, color = osalenu) + 
   geom_boxplot(width = .4, alpha = 0, outlier.colour = NA, position = position_dodge(.6)) + 
   coord_cartesian(ylim = c(min(skaala), max(skaala))) + 
   labs(#title = "Müügitulu absoluutne muutus esimesel kolmel tegutsemise aastal", 
        caption = "Allikas: Äriregister", color = NULL) + 
-  scale_x_discrete(labels = as.roman(1:3), name = "Tegutsemise aasta") + 
+  scale_x_discrete(labels = as.roman(1:3), name = "Ettevõtte tegutsemise aasta") + 
   scale_y_continuous(breaks = skaala, labels = Numb(skaala / 1e3), 
                      name = "Müügitulu, tuhat eurot") + 
-  scale_color_manual(labels = c("Meetmes 1.2 osalenud ettevõtjad", 
-                                "Teised investeeringutoetusi saanud ettevõtjad"), 
-                     values = c('red', 'black')) + 
+  scale_color_manual(values = c('red', 'black')) + 
   facet_wrap(~tegevusala) + 
   theme_white() + theme(legend.position = 'top')
 ```
 
-# Noortalunike müügitulu kasv oli aeglaseim veisekasvatajatel
+# Müügitulu kasv oli aeglaseim piimakarjakasvatajatel
 
-Kuigi noortalunike müügitulu kasvas mediaani alusel kõikidel tegevusaladel, võib joonis `r fig('mt.aeg.suht')` alusel öelda, et kasvu kiirus ja muster sõltus tegevusalast.
+Kuigi noortalunike müügitulu kasvas mediaani järgi hinnates kõikidel tegevusaladel, võib joonis `r fig('mt.aeg.suht')` alusel öelda, et kasvu kiirus sõltus tegutsemise aastast ja tegevusalast. Kõige kiiremini ja ka stabiilsemalt tõusis käve nootalunikel, kes tegelesid segapõllumajanduse ja teraviljakasvatusega. Teistest tegevusaladest märkimisväärselt aeglasemalt kasvas müügitulu aga piimakarjakasvatuses, kus käibed olid samas ka kõige kõrgemad. 
 
-Keskmise noortaluniku müügitulu kasvumustri alusel võib tegeusalad jagada kolmeks. Teraviljakasvatuses ja sellega osalt seotud segapõllumajanduses kasvas müügitulu lineaarselt. Väiksema käibega tegevuste puhul nagu köögiviljakasvatus ja mesindus kasvas müügtulu alles kolmandal aastal. Vastupidi oli (piima)veisekasvatuses, mille puhul kasvas müügitulu küll teisel, aga mitte oluliselt enam kolmandal aastal.
+Keskmise noortaluniku müügitulu kasvumustri alusel võib tegevusalad joonise `r fig('mt.aeg.suht')` alusel jagada kolmeks. Teraviljakasvatuses ja sellega osalt seotud segapõllumajanduses kasvas müügitulu lineaarselt. Väiksema käibega tegevuste puhul nagu köögiviljakasvatus ja mesindus kasvas müügtulu alles kolmandal aastal. Vastupidi oli (piima)veisekasvatuses, mille puhul kasvas müügitulu küll teisel, aga mitte oluliselt enam kolmandal aastal.
 
 ``` {r mt.aeg.suht, fig.cap = fig(mt.aeg.suht, 'cap')}
 ## Loo andmestik
@@ -151,29 +155,33 @@ ggplot(mtDF) +
   coord_cartesian(xlim = c(1.5, 3)) + 
   labs(#title = "Noortalunike müügitulu suhteline muutus esimesel kolmel tegutsemise  aastal", 
        caption = "Allikas: Äriregister") + 
-  scale_x_discrete(labels = as.roman(1:5), name = "Tegutsemise aasta") + 
-  scale_y_continuous(breaks = seq(0, 1.2, .1), labels = Perc, 
+  scale_x_discrete(labels = as.roman(1:5), name = "Ettevõtte tegutsemise aasta") + 
+  scale_y_continuous(breaks = seq(0, 1.2, .1), labels = paste0('+', Perc(seq(0, 1.2, .1))), 
                      name = "Müügitulu võrreldes I tegutsemise aastaga (mediaan)") + 
   theme_white() + theme(legend.position = 'none')
 ```
 
-# Erinevused müügitulus süvenesid pärast investeeringute tegemist
+# Toetus süvendas erinevusi müügitulus
 
-Meetme raames tehtud investeeringute mõju käibele aitab teatud määral hinnata joonisel `r fig(mt.inv)` kujutatud müügitulu muutus investeeringu tegemise aasta suhtes. Kuna välja toodud vahemik on küllaltki lai, on joonisel hinnatud vaid aastatel 2010-11 toetatud noortalunikke. Investeeringu tegemise aastaks loeti sealjuures aastat, mil tootjale maksti toetus välja. 
- 
-Investeeringu tegemise järgselt on noortalunike müügiulu kasvanud küllaltki stabiilselt.
+Meetme raames tehtud toetuse mõju käibele aitab teatud osas hinnata joonisel `r fig(mt.inv)` kujutatud müügitulu muutus toetuse saamise aasta suhtes. Kuna välja toodud vahemik on küllaltki lai, oli võimalik hinnata vaid aastatel 2010-11 toetatud noortalunikke. Siiski ilmneb jooniselt, et toetusele saamise järgselt kasvas noortalunike müügitulu ja vähenes märgatavalt väga madala müügituluga tootjate arv. Keskmise müügituluga noortaluniku käive tõusis umbes poole võrra ja kõrgema käibega noortalunikel suurenes müügitulu eriti märgatavalt toetuse saamisele järgnenud teisel aastal. Seega tõusis toetuse saamisele järgnevatel aastatel müügitulu märkimisväärselt küll osadel noortalunikel, kuid umbes veerandil jäi see näitaja ka viiendal aastal alla 40 tuhande euro. 
 
-Teatud kõrvalekalle joonisel `r fig(mt.inv)` ilmneb 5. aastal, kui kõikide kujutatud ettevõtjate müügitulu kasvas üsna järsku üle 20 tuhande piiri. Seda saab seletada meetme nõudega, mille kohaselt peab toetuse saamisele järgneva viienda kalendriaasta lõpuks taotleja aastamüügitulu põllumajanduslikust tegevusest moodustama vähemalt 80% saadud toetuse summast. Võib oletada, et selle tähtaja lähenedes on madalama käibega tootjad teinud lisapingutusi, et enda müügitulu vastavale tasemele tõsta. Või siis vähemalt esitanud enda müügitulu märkimisväärselt kõrgemana kui eelneval aastal aastal. 
+Teatud kõrvalekalle joonisel `r fig(mt.inv)` ilmneb viiendal aastal, kui madalama käibega noortalunike müügitulu kasvas üsna järsult üle 20 tuhande euro piiri. Seda saab seletada meetme nõudega, mille kohaselt pidi toetuse saamisele järgneva viienda kalendriaasta lõpuks taotleja aastamüügitulu põllumajanduslikust tegevusest moodustama vähemalt 80% saadud toetuse summast. Võib oletada, et selle tähtaja lähenedes on madalama käibega tootjad teinud lisapingutusi, et enda müügitulu vastavale tasemele viia või piisavalt kõrgena näidata.
+
+Mõneti üllatavalt nähtub jooniselt `r fig(mt.inv)`, et alustavatena määratletud noortalunike käive oli pigem kõrgem kui noortel, kes senist tegevust jätkasid või vanematelt üle võtsid. Alustajate ja teiste noortalunike käibe erinevus vähenes aga aasta aastalt ja viiendal aastal ei olnud see erinevus enam statistiliselt oluline. Kuigi üldiselt erinevused noortalunike vahel müügitulus pärast toetuse saamist kasvasid, siis erinevused alustavate ja teiste noortalunike müügitulus samal ajal pigem vähenesid.
 
 ``` {r mt.inv, fig.cap = fig(mt.inv, 'cap')}
 ## Loo andmestik
-mtDF <- extTs(majAr, 'kood', 'müügitulu', 'inv.aeg', -1:5)
+mtDF <- extTs(majAr, 'kood', 'müügitulu', 'inv.aeg', 0:5)
 
 ## Jäta alles vaid osalenud
 mtDF <- mtDF[mtDF$osalenu, ]
 
 ## Määra y-skaala puktid
 skaala <- seq(0, quantile(mtDF$müügitulu, probs = .9, na.rm = T), 2e4)
+
+## Muuda 
+mtDF$alustaja <- ifelse(mtDF$alustaja, "Alustaja", "Ülevõtja või jätkaja")
+mtDF$alustaja <- addSize(mtDF, 'kood', 'alustaja')
 
 ## Joonista
 ggplot(mtDF) + 
@@ -183,10 +191,10 @@ ggplot(mtDF) +
   coord_cartesian(ylim = c(min(skaala), max(skaala))) + 
   labs(#title = "Noortalunike müügitulu muutus investeeringu tegemise suhtes", 
        caption = "Allikas: Äriregister", color = NULL) + 
-  scale_x_discrete(labels = c(-1, 0, paste0('+', 1:5)), 
-                   name = "Aasta investeeringu tegemise aasta suhtes") + 
+  scale_x_discrete(labels = c(0, paste0('+', 1:5)), 
+                   name = "Aasta toetuse saamise aasta suhtes") + 
   scale_y_continuous(breaks = skaala, labels = Numb(skaala / 1e3), 
                      name = "Müügitulu, tuhat eurot") + 
-  scale_color_manual(labels = c("Ülevõtja või jätkaja", "Alustaja"), values = c('black', 'red')) +
+  scale_color_manual(values = c('red', 'black')) +
   theme_white() + theme(legend.position = 'top')
 ```
